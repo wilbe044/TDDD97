@@ -1,3 +1,4 @@
+
 __author__ = 'wille'
 from sqlite3 import dbapi2 as sqlite3
 from flask import g, Flask
@@ -46,8 +47,28 @@ def sign_up_db(email, password, firstname, familyname, gender, city, country):
 
 def update_password_db(email, new_password):
     c = get_db()
-    password = c.execute("update users set password = new_password where email = ?", (email))
-    return password
+    c.execute("update users set password = ? where email = ?", (new_password, email,))
+    c.commit()
+
+
+def get_user_data_db(email):
+    c = get_db()
+    user_data = c.execute("select * from users where email = ?", (email,))
+    c.commit()
+    return user_data.fetchone()
+
+
+def save_message_db(to_email, from_email, message):
+    c = get_db()
+    c.execute("insert into messages(to_email, from_email, message) values (?,?,?)", (to_email, from_email, message))
+    c.commit()
+
+
+def get_messages_db(email):
+    c = get_db()
+    user_messages = c.execute("select * from messages where to_email = ?", (email,))
+    c.commit
+    return user_messages.fetchall()
 
 
 def init_db():

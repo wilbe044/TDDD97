@@ -27,12 +27,14 @@ def sign_up(email, password, firstname, familyname, gender, city, country):
     if check_email_db(email):
         return jsonify(success=False, message="User already exist!")
     else:
-        try:
-            sign_up_db(email, password, firstname, familyname, gender, city, country)
-            return jsonify(success=True, message="Successfully created a new user!")
-
-        except:
-            return jsonify(success=False, Message="Fail")
+        if validate_password(password):
+            try:
+                sign_up_db(email, password, firstname, familyname, gender, city, country)
+                return jsonify(success=True, message="Successfully created a new user!")
+            except:
+                return jsonify(success=False, Message="Fail")
+        else:
+            return jsonify(success=False, message="New password must contain at least 6 characters!")
 
 
 def sign_out(token):
@@ -41,6 +43,13 @@ def sign_out(token):
         return jsonify(success=True, message="You are signed out!")
     else:
         return jsonify(success=False, message="You are not logged in!")
+
+
+def validate_password(password):
+    if len(password) < 6:
+        return False
+    else:
+        return True
 
 
 def in_session(token):
