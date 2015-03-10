@@ -60,14 +60,18 @@ def get_user_messages_by_token(token):
 
 
 def get_user_messages_by_email(token, email):
-    if in_session(token):
-        user_messages = get_messages_db(email)
-       # i = 0
-        #while (i < len(user_messages)):
-        print user_messages[1]
-        user_wall = {'writer': user_messages[1],
-                    'message': user_messages[1]}
-            #i = i+1
-        return jsonify(success=True, message="User messages successfully retrieved.", data=user_wall)
-    else:
-        return jsonify(success=False, message="You are not logged in!")
+    #if in_session(token):
+        if check_email_db(email):
+            user_messages = get_messages_db(email)
+            wall_messages = []
+            for i in user_messages:
+                user_wall = {'id': i[0],
+                            'reciever': i[1],
+                            'writer': i[2],
+                            'message': i[3]}
+                wall_messages.append(user_wall)
+            return jsonify(success=True, message="User messages successfully retrieved.", data=wall_messages)
+        else:
+            return jsonify(success=False, message="Nu such user")
+    #else:
+     #   return jsonify(success=False, message="You are not logged in!")
