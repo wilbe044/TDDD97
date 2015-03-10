@@ -60,7 +60,7 @@ def get_user_messages_by_token(token):
 
 
 def get_user_messages_by_email(token, email):
-    #if in_session(token):
+    if in_session(token):
         if check_email_db(email):
             user_messages = get_messages_db(email)
             wall_messages = []
@@ -73,5 +73,5 @@ def get_user_messages_by_email(token, email):
             return jsonify(success=True, message="User messages successfully retrieved.", data=wall_messages)
         else:
             return jsonify(success=False, message="Nu such user")
-    #else:
-     #   return jsonify(success=False, message="You are not logged in!")
+    else:
+        return jsonify(success=False, message="You are not logged in!")
