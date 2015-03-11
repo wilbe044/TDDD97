@@ -43,10 +43,11 @@ def server_sign_up():
     return message
 
 
-@app.route("/sign_out", methods=['POST'])
+@app.route("/sign_out", methods=['GET'])
 def server_sign_out():
-    token = request.form['token']
-    return sign_out(token)
+    print "inne i server sign_out"
+    if 'token' in session:
+        return sign_out(session['token'])
 
 
 @app.route("/change_password", methods=['POST'])

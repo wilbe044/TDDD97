@@ -22,11 +22,10 @@ validateCheck = function(form){
 	// var repeatedPassword = document.getElementById("repeatedPassword");
 	
 	if (form.password.value != form.repeatedPassword.value){
-		alert("Password do not match!");
 		return false;
 	}
 	else if(form.password.value.length < 6 ){
-		alert("Password must contain 6 or more characters!");
+		return false;
 	}else {
 		return true;
 	}
@@ -82,7 +81,7 @@ var AJAXPostFunction = function(url, requestHeader, requestHeaderValue,  param, 
  * Callbacks a javascript object (Parsed JSON from the server)
  */
 
- var AJAXGetFunction = function(url, callback) {
+var AJAXGetFunction = function(url, callback) {
     var httpRequest;
     httpRequest = new XMLHttpRequest();
     httpRequest.onreadystatechange = function() {
@@ -140,12 +139,20 @@ signInUser = function(form){
         }
     });
 };
-
+//FUNKAR INTE!
 signOutUser = function(){
-	var token = getToken();
-	var object = serverstub.signOut(token);
-	localStorage.removeItem("myToken");
-	displayView();
+	//var token = getToken();
+	//var object = serverstub.signOut(token);
+    AJAXGetFunction("/sign_out", function() {
+        if(this.success){
+            localStorage.removeItem("myToken");
+            displayView();
+            console.log(this.message)
+        }
+        else{
+            console.log(this.message)
+        }
+    });
 };
 
 function setToken(token){
@@ -157,14 +164,30 @@ function getToken(){
 function changePassword(form){
 	var token = getToken();
 	var formData = {
-		oldPassword: form.oldPassword.value,
-		newPassword: form.password.value
-	};
-	if(validateCheck(form)){
-		var object = serverstub.changePassword(token, formData.oldPassword, formData.newPassword);
-		alert(object.message);
+		token: token,
+        old_password: form.oldPassword.value,
+		new_password: form.password.value
 	}
-}
+	if(validateCheck(form)) {
+        //var object = serverstub.changePassword(token, formData.oldPassword, formData.newPassword);
+        var data = encodeToFormUrl(formData);
+        AJAXPostFunction("/change_password", "Content-type", "application/x-www-form-urlencoded", data, function () {
+            if (this.success) {
+                document.getElementById("accountErrorBox").style.display = "block";
+                document.getElementById("accountErrorMessage").innerHTML = this.message;
+            } else {
+                document.getElementById("accountErrorBox").style.display = "block";
+                document.getElementById("accountErrorMessage").innerHTML = "Password error!";
+            }
+        });
+    }else{
+        document.getElementById("errorBox").style.display = "block";
+        document.getElementById("errorMessage").innerHTML = "Password do not match or must contain at least 6 characters!";
+    }
+	form.oldPassword.value = "";
+	form.password.value = "";
+	form.repeatedPassword.value = "";
+};
 function getUserInfo(){
 	var token = getToken();
 	var userInfo = serverstub.getUserDataByToken(token);
