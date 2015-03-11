@@ -4,9 +4,10 @@
 <script src="/static/client.js" type="text/javascript"></script>
 <script src="/static/serverstub.js" type="text/javascript"></script>
 <script type=”text/view” id="welcomeView">
-
-
-
+<div id="errorBox">
+	<div id="errorMessage">
+	</div>
+</div>
 <div id="content">
 		<div id="image">
 		<img src="/static/wimage.png" alt="image">
@@ -98,7 +99,7 @@
 		<button onclick="showDiv(3)">Account</button>
 </div>
 <div id="home">
-	<h1>Home</h1>
+	<h3>Home</h3>
 	<div id="userInfo">
 	<h3>User info</h3>
 	<div id="email" >
@@ -116,7 +117,7 @@
 	</div>
 	<div id="post">
 	<h3>Post message</h3>
-	<form onsubmit="postMessage(this)" id="postMessage">
+	<form onsubmit="postMessage(this); return false;" id="postMessage">
 	<input type="text" id="message" placeholder="Write your message here...">
 	<input type="submit" value="Post" id="postButton">
 	</form>
@@ -130,8 +131,8 @@
 
 </div>
 <div id="browse">
-	<h1>Nu visas browse</h1>
-	<form onsubmit="goToUser(this)" id="searchUserForm">
+	<h3>Find a friend!</h3>
+	<form onsubmit="goToUser(this); return false;" id="searchUserForm">
 			<div class="field">
 			<label>
 			Enter email:
@@ -140,10 +141,14 @@
 			</div>
 			<input type="submit" value="Find user">
 		</form>
+	<div id="browseErrorBox">
+		<div id="browseErrorMessage">
+		</div>
+	</div>
 </div>
 <div id="account">
 		<h3>Change password</h3>
-		<form onsubmit="changePassword(this)" id="changePassword">
+		<form onsubmit="changePassword(this); return false;" id="changePassword">
 			<div class="field">
 			<label>
 			Old password:
@@ -167,6 +172,11 @@
 		<form onsubmit="signOutUser(); return false;">
 			<input type="submit" value="signOut">
 		</form>
+	<div id="accountErrorBox">
+		<div id="accountErrorMessage">
+		</div>
+	</div>
+
 </div>
 <div id="otherUser">
 	<h1>Other User</h1>
@@ -187,7 +197,7 @@
 	</div>
 	<div id="otherPost">
 	<h3>Post message</h3>
-	<form onsubmit="postOtherMessage(this)" id="otherPostMessage">
+	<form onsubmit="postOtherMessage(this); return false;" id="otherPostMessage">
 	<input type="text" id="message" placeholder="Write your message here...">
 	<input type="submit" value="Post" id="otherPostButton">
 	</form>

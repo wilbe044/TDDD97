@@ -2,8 +2,8 @@
 displayView = function(){
 	var token = getToken();
 // the code required to display a view
-if (token === null ){
-document.getElementById("main").innerHTML = document.getElementById("welcomeView").innerHTML;
+    if (token === null ){
+    document.getElementById("main").innerHTML = document.getElementById("welcomeView").innerHTML;
 } else{
 	document.getElementById("main").innerHTML = document.getElementById("profileView").innerHTML;
 	getUserInfo();
@@ -59,6 +59,43 @@ validateCheck = function(form){
  	}
  };
 
+
+var AJAXPostFunction = function(url, requestHeader, requestHeaderValue,  param, callback) {
+    var httpRequest;
+    httpRequest = new XMLHttpRequest();
+    httpRequest.onreadystatechange = function() {
+        if (httpRequest.readyState === 4 && httpRequest.status===200) {
+            callback.call(JSON.parse(httpRequest.responseText));
+        }
+    };
+    httpRequest.open("POST", url, true);
+    httpRequest.setRequestHeader(requestHeader, requestHeaderValue);
+    httpRequest.send(param);
+};
+
+/*
+ * Method that handles Ajax requests
+ * @params - Url - url for request as string
+ * method - request method as string
+ * header - request header as string (x-www-form-urlencoded)
+ * param - parameters as string
+ * Callbacks a javascript object (Parsed JSON from the server)
+ */
+
+ var AJAXGetFunction = function(url, callback) {
+    var httpRequest;
+    httpRequest = new XMLHttpRequest();
+    httpRequest.onreadystatechange = function() {
+        if (httpRequest.readyState === 4 && httpRequest.status===200) {
+            //Parse the returned JSON object before returning it
+            callback.call(JSON.parse(httpRequest.responseText));
+        }
+    };
+    httpRequest.open("GET", url, true);
+    httpRequest.send();
+};
+
+
 signUpUser = function(form){
 	if (validateCheck(form)){
 		var formData = {
@@ -70,31 +107,38 @@ signUpUser = function(form){
 			city: form.city.value,
 			country: form.country.value 
 		}
-		var success = serverstub.signUp(formData);
-		alert(success.message);
-		if(success.success){
-			var object = serverstub.signIn(formData.email, formData.password);
-			localStorage.setItem("myToken", object.data);
-			displayView();
-		}
-		
-		return false;
-	}
+        var data = encodeToFormUrl(formData);
+        AJAXPostFunction("/sign_up", "Content-type", "application/x-www-form-urlencoded", data, function() {
+            if (this.success) {
+                signInUser(form);
+            } else {
+                document.getElementById("errorBox").style.display = "block";
+                document.getElementById("errorMessage").innerHTML = this.message;
+            }
+            return false;
+        });
+	}else
+        {
+            document.getElementById("errorBox").style.display = "block";
+            document.getElementById("errorMessage").innerHTML = "Password do not match or must contain at least 6 characters!";
+        }
 };
 
 signInUser = function(form){
 	var userData = {
 		email: form.email.value,
 		password: form.password.value
-	}
-	var object = serverstub.signIn(userData.email, userData.password);
-	if (object.success){
-		localStorage.setItem("myToken", object.data);
-		displayView();
-	} else{
-		alert(object.message);
-	}	
-
+	};
+    var data = encodeToFormUrl(userData);
+    AJAXPostFunction("/sign_in", "Content-type", "application/x-www-form-urlencoded", data, function(){
+        if (this.success) {
+            localStorage.setItem("myToken", this.data);
+            displayView();
+        } else {
+            document.getElementById("errorBox").style.display = "block";
+		    document.getElementById("errorMessage").innerHTML = object.message;
+        }
+    });
 };
 
 signOutUser = function(){
@@ -106,24 +150,21 @@ signOutUser = function(){
 
 function setToken(token){
 	localStorage.setItem("myToken", token);
-};
-
+}
 function getToken(){
 	return localStorage.getItem("myToken");
-};
-
+}
 function changePassword(form){
 	var token = getToken();
 	var formData = {
 		oldPassword: form.oldPassword.value,
 		newPassword: form.password.value
-	}
+	};
 	if(validateCheck(form)){
 		var object = serverstub.changePassword(token, formData.oldPassword, formData.newPassword);
 		alert(object.message);
 	}
-};
-
+}
 function getUserInfo(){
 	var token = getToken();
 	var userInfo = serverstub.getUserDataByToken(token);
@@ -135,28 +176,25 @@ function getUserInfo(){
 	document.getElementById("city").innerHTML = userInfo.data.city;
 	document.getElementById("country").innerHTML = userInfo.data.country;
 
-};
-
+}
 function postMessage(form){
 	var token = getToken();
 	var message = {
 		message: form.message.value
-	}
+	};
 	var toEmail = localStorage.getItem("myEmail");
 	var object = serverstub.postMessage(token, message, toEmail);
 	postWall();
-};
-
+}
 function postOtherMessage(form){
 	var token = getToken();
 	var message = {
 		message: form.message.value
-	}
+	};
 	var toEmail = localStorage.getItem("toEmail");
 	var object = serverstub.postMessage(token, message, toEmail);
 	postOtherWall();
-};
-
+}
 function postWall(){
 	var token = getToken();
 	var userMessages = serverstub.getUserMessagesByToken(token);
@@ -187,7 +225,7 @@ function goToUser(form){
 	var token = getToken();
 	var toEmail = {
 		toEmail: form.otherUserEmail.value
-	}
+	};
 	localStorage.setItem("toEmail", toEmail.toEmail);
 	var otherUserInfo = serverstub.getUserDataByEmail(token, toEmail.toEmail);
 	document.getElementById("otherEmail").innerHTML = otherUserInfo.data.email;
@@ -198,3 +236,12 @@ function goToUser(form){
 	document.getElementById("otherCountry").innerHTML = otherUserInfo.data.country;
 }
 
+var encodeToFormUrl = function(object) {
+    var data, key;
+    data = "";
+    for (key in object)  {
+        data += ""+key+"="+object[key]+"&";
+    }
+    data = data.substring(0, data.length - 1);
+    return data;
+};

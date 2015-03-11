@@ -5,9 +5,12 @@ from Twidder import database_helper
 from Twidder.session_functions import *
 
 app = Flask(__name__, static_url_path='/static')
-
+app.debug = True
 app.secret_key = "jullan"
 
+#config
+USERNAME = 'Wille'
+PASSWORD = 'qwerty'
 
 @app.route("/init_db")
 def server_setup_db():
