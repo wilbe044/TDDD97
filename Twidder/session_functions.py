@@ -26,16 +26,19 @@ def get_user_data_by_token(token):
 
 def get_user_data_by_email(token, email):
     if in_session(token):
-        user_data = get_user_data_db(email)
+        if check_email_db(email):
+            user_data = get_user_data_db(email)
 
-        user_info = {'email': user_data[0],
+            user_info = {'email': user_data[0],
                                   'firstname': user_data[2],
                                   'familyname': user_data[3],
                                   'gender': user_data[4],
                                   'city': user_data[5],
                                   'country': user_data[6]}
 
-        return jsonify(success=True, message="User data successfully retrieved.", data=user_info)
+            return jsonify(success=True, message="User data successfully retrieved.", data=user_info)
+        else:
+            return jsonify(success=False, message="User does not exist!")
     else:
         return jsonify(success=False, message="You are not logged in!")
 

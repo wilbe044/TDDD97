@@ -30,11 +30,14 @@ def sign_up(email, password, firstname, familyname, gender, city, country):
         return jsonify(success=False, message="User already exist!")
     else:
         if validate_password(password):
-            try:
-                sign_up_db(email, password, firstname, familyname, gender, city, country)
-                return jsonify(success=True, message="Successfully created a new user!")
-            except:
-                return jsonify(success=False, Message="Fail")
+            if check_form(email, password, firstname, familyname, gender, city, country):
+                try:
+                    sign_up_db(email, password, firstname, familyname, gender, city, country)
+                    return jsonify(success=True, message="Successfully created a new user!")
+                except:
+                    return jsonify(success=False, Message="Fail")
+            else:
+                return jsonify(success=False, Message="All fields must contain between 1 - 30 characters")
         else:
             return jsonify(success=False, message="New password must contain at least 6 characters!")
 
@@ -53,6 +56,22 @@ def validate_password(password):
     else:
         return True
 
+def check_form(email, password, firstname, familyname, gender, city, country):
+    if len(email) == 0 or len(email) > 30:
+        return False
+    elif len(firstname) == 0 or len(firstname) > 30:
+            return False
+    elif len(familyname) == 0 or len(familyname) > 30:
+            return False
+    elif len(gender) == 0 or len(gender) > 30:
+            return False
+    elif len(city) == 0 or len(city) > 30:
+            return False
+    elif len(country) == 0 or len(country) > 30:
+            return False
+    else:
+        return True
+
 
 def in_session(token):
     try:
@@ -61,3 +80,5 @@ def in_session(token):
     except:
         pass
     return False
+
+
