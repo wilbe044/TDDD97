@@ -60,10 +60,10 @@ def server_change_password():
         return change_password(token, old_password, new_password)
 
 
-@app.route("/get_user_data_by_token", methods=['POST'])
-def server_get_user_data_by_token():
-    token = request.form['token']
-    return get_user_data_by_token(token)
+@app.route("/get_user_data_by_token/<token>", methods=['GET'])
+def server_get_user_data_by_token(token):
+    if request.method == 'GET':
+        return get_user_data_by_token(token)
 
 
 @app.route("/get_user_data_by_email", methods=['POST'])
@@ -73,10 +73,10 @@ def server_get_user_data_by_email():
     return get_user_data_by_email(token, email)
 
 
-@app.route("/get_user_messages_by_token", methods=['POST'])
-def server_get_user_messages_by_token():
-    token = request.form['token']
-    return get_user_messages_by_token(token)
+@app.route("/get_user_messages_by_token/<token>", methods=['GET'])
+def server_get_user_messages_by_token(token):
+    if request.method == 'GET':
+        return get_user_messages_by_token(token)
 
 
 @app.route("/get_user_messages_by_email", methods=['POST'])
@@ -88,10 +88,11 @@ def server_get_user_messages_by_email():
 
 @app.route("/post_message", methods=['POST'])
 def server_post_message():
-    token = request.form['token']
-    message = request.form['message']
-    to_email = request.form['to_email']
-    return post_message(token, message, to_email)
+    if request.method == 'POST':
+        token = request.form['token']
+        message = request.form['message']
+        to_email = request.form['to_email']
+        return post_message(token, message, to_email)
 
 
 if __name__ == "__main__":

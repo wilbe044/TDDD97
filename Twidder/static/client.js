@@ -141,7 +141,6 @@ signInUser = function(form){
 };
 
 signOutUser = function(){
-    console.log(localStorage);
     AJAXGetFunction("/sign_out/"+localStorage.getItem("myToken")+"", function() {
         if(this.success){
             localStorage.removeItem("myToken");
@@ -187,26 +186,43 @@ function changePassword(form){
 	form.repeatedPassword.value = "";
 };
 function getUserInfo(){
-	var token = getToken();
-	var userInfo = serverstub.getUserDataByToken(token);
-	localStorage.setItem("myEmail", userInfo.data.email);
-	document.getElementById("email").innerHTML = userInfo.data.email;
-	document.getElementById("firstname").innerHTML = userInfo.data.firstname;
-	document.getElementById("familyname").innerHTML = userInfo.data.familyname;
-	document.getElementById("gender").innerHTML = userInfo.data.gender;
-	document.getElementById("city").innerHTML = userInfo.data.city;
-	document.getElementById("country").innerHTML = userInfo.data.country;
-
-}
+	//var token = getToken();
+	//var userInfo = serverstub.getUserDataByToken(token);
+    AJAXGetFunction("/get_user_data_by_token/"+localStorage.getItem("myToken")+"", function() {
+        if (this.success) {
+            localStorage.setItem("myEmail", this.data.email);
+            document.getElementById("email").innerHTML = this.data.email;
+            document.getElementById("firstname").innerHTML = this.data.firstname;
+            document.getElementById("familyname").innerHTML = this.data.familyname;
+            document.getElementById("gender").innerHTML = this.data.gender;
+            document.getElementById("city").innerHTML = this.data.city;
+            document.getElementById("country").innerHTML = this.data.country;
+        }
+        else{
+            console.log(this.message)
+        }
+    });
+};
 function postMessage(form){
 	var token = getToken();
+    var toEmail = localStorage.getItem("myEmail");
 	var message = {
-		message: form.message.value
+        token: token,
+		message: form.message.value,
+        to_email: toEmail
 	};
-	var toEmail = localStorage.getItem("myEmail");
-	var object = serverstub.postMessage(token, message, toEmail);
-	postWall();
-}
+    form.message.value = "";
+	//var object = serverstub.postMessage(token, message, toEmail);
+    var data = encodeToFormUrl(message);
+    AJAXPostFunction("/post_message", "Content-type", "application/x-www-form-urlencoded", data, function () {
+        if(this.success) {
+            postWall();
+        }
+        else{
+            console.log(this.message);
+        }
+    });
+};
 function postOtherMessage(form){
 	var token = getToken();
 	var message = {
@@ -216,17 +232,29 @@ function postOtherMessage(form){
 	var object = serverstub.postMessage(token, message, toEmail);
 	postOtherWall();
 }
-function postWall(){
-	var token = getToken();
-	var userMessages = serverstub.getUserMessagesByToken(token);
-	var text = "";
-	for(i = 0; i < userMessages.data.length; i++){
-		if(i == 10){break}
-	text += userMessages.data[i].writer + ": " + userMessages.data[i].content.message + "<br>";
-}
-document.getElementById("wallContent").innerHTML = text;
 
-}
+
+function postWall(){
+	//var token = getToken();
+	//var userMessages = serverstub.getUserMessagesByToken(token);
+    AJAXGetFunction("/get_user_messages_by_token/"+localStorage.getItem("myToken")+"", function() {
+        if (this.success) {
+            var text = "";
+            var counter = this.data.length;
+            for (i = 0; i < this.data.length; i++) {
+                if (i == 10) {
+                    break
+                }
+                counter = counter - 1;
+                text += this.data[counter].writer + ": " + this.data[counter].message + "<br>";
+            }
+            document.getElementById("wallContent").innerHTML = text;
+        }
+        else{
+            console.log(this.message);
+        }
+    });
+};
 
 function postOtherWall(){
 	var token = getToken();
