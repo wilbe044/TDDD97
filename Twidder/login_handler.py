@@ -43,6 +43,7 @@ def sign_up(email, password, firstname, familyname, gender, city, country):
 
 
 def sign_out(token):
+    print session[token]
     if in_session(token):
         session.pop(token, None)
         return jsonify(success=True, message="You are signed out!")

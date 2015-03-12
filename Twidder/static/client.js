@@ -143,7 +143,8 @@ signInUser = function(form){
 signOutUser = function(){
 	//var token = getToken();
 	//var object = serverstub.signOut(token);
-    AJAXGetFunction("/sign_out", function() {
+    console.log(localStorage);
+    AJAXGetFunction("/sign_out/"+localStorage.getItem("myToken")+"", function() {
         if(this.success){
             localStorage.removeItem("myToken");
             displayView();
