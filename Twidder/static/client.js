@@ -139,10 +139,8 @@ signInUser = function(form){
         }
     });
 };
-//FUNKAR INTE!
+
 signOutUser = function(){
-	//var token = getToken();
-	//var object = serverstub.signOut(token);
     console.log(localStorage);
     AJAXGetFunction("/sign_out/"+localStorage.getItem("myToken")+"", function() {
         if(this.success){
@@ -170,7 +168,6 @@ function changePassword(form){
 		new_password: form.password.value
 	}
 	if(validateCheck(form)) {
-        //var object = serverstub.changePassword(token, formData.oldPassword, formData.newPassword);
         var data = encodeToFormUrl(formData);
         AJAXPostFunction("/change_password", "Content-type", "application/x-www-form-urlencoded", data, function () {
             if (this.success) {
