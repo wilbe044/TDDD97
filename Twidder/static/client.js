@@ -288,6 +288,7 @@ function goToUser(form){
 	var toEmail = {
 		toEmail: form.otherUserEmail.value
 	}
+    consol.log(toEmail);
 	form.otherUserEmail.value = "";
 	localStorage.setItem("toEmail", toEmail.toEmail);
 	//Lägg till if-sats för att kontrollera om det är false eller true
