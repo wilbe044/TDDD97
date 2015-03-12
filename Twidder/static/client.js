@@ -284,20 +284,30 @@ function postOtherWall(){
 };
 
 function goToUser(form){
-	showDiv(4);
 	var token = getToken();
 	var toEmail = {
 		toEmail: form.otherUserEmail.value
-	};
+	}
+	form.otherUserEmail.value = "";
 	localStorage.setItem("toEmail", toEmail.toEmail);
+	//Lägg till if-sats för att kontrollera om det är false eller true
+
 	var otherUserInfo = serverstub.getUserDataByEmail(token, toEmail.toEmail);
-	document.getElementById("otherEmail").innerHTML = otherUserInfo.data.email;
-	document.getElementById("otherFirstname").innerHTML = otherUserInfo.data.firstname;
-	document.getElementById("otherFamilyname").innerHTML = otherUserInfo.data.familyname;
-	document.getElementById("otherGender").innerHTML = otherUserInfo.data.gender;
-	document.getElementById("otherCity").innerHTML = otherUserInfo.data.city;
-	document.getElementById("otherCountry").innerHTML = otherUserInfo.data.country;
+	if(otherUserInfo.success){
+		document.getElementById("otherEmail").innerHTML = otherUserInfo.data.email;
+		document.getElementById("otherFirstname").innerHTML = otherUserInfo.data.firstname;
+		document.getElementById("otherFamilyname").innerHTML = otherUserInfo.data.familyname;
+		document.getElementById("otherGender").innerHTML = otherUserInfo.data.gender;
+		document.getElementById("otherCity").innerHTML = otherUserInfo.data.city;
+		document.getElementById("otherCountry").innerHTML = otherUserInfo.data.country;
+		showDiv(4);
+		document.getElementById("browseErrorBox").style.display = "none";
+	}else{
+		document.getElementById("browseErrorBox").style.display = "block";
+		document.getElementById("browseErrorMessage").innerHTML = otherUserInfo.message;
+	}
 }
+
 
 var encodeToFormUrl = function(object) {
     var data, key;
