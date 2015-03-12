@@ -17,9 +17,7 @@ window.onload = function(){
 displayView();
 };
 
-validateCheck = function(form){ 	
-	// var password = document.getElementById("password");
-	// var repeatedPassword = document.getElementById("repeatedPassword");
+validateCheck = function(form){
 	
 	if (form.password.value != form.repeatedPassword.value){
 		return false;
@@ -186,8 +184,6 @@ function changePassword(form){
 	form.repeatedPassword.value = "";
 };
 function getUserInfo(){
-	//var token = getToken();
-	//var userInfo = serverstub.getUserDataByToken(token);
     AJAXGetFunction("/get_user_data_by_token/"+localStorage.getItem("myToken")+"", function() {
         if (this.success) {
             localStorage.setItem("myEmail", this.data.email);
@@ -212,7 +208,6 @@ function postMessage(form){
         to_email: toEmail
 	};
     form.message.value = "";
-	//var object = serverstub.postMessage(token, message, toEmail);
     var data = encodeToFormUrl(message);
     AJAXPostFunction("/post_message", "Content-type", "application/x-www-form-urlencoded", data, function () {
         if(this.success) {
@@ -225,18 +220,25 @@ function postMessage(form){
 };
 function postOtherMessage(form){
 	var token = getToken();
-	var message = {
-		message: form.message.value
+    var toEmail = localStorage.getItem("toEmail");
+	var formData = {
+        token: token,
+		message: form.message.value,
+        to_email: toEmail
 	};
-	var toEmail = localStorage.getItem("toEmail");
-	var object = serverstub.postMessage(token, message, toEmail);
-	postOtherWall();
-}
+    var data = encodeToFormUrl(formData);
+    AJAXPostFunction("/post_message", "Content-type", "application/x-www-form-urlencoded", data, function () {
+        if(this.success) {
+            postOtherWall();
+        }
+        else{
+            console.log(this.message);
+        }
+    });
+};
 
 
 function postWall(){
-	//var token = getToken();
-	//var userMessages = serverstub.getUserMessagesByToken(token);
     AJAXGetFunction("/get_user_messages_by_token/"+localStorage.getItem("myToken")+"", function() {
         if (this.success) {
             var text = "";
@@ -263,7 +265,6 @@ function postOtherWall(){
         token: token,
         email: toEmail
     }
-    //var userMessages = serverstub.getUserMessagesByEmail(token, toEmail);
     var data = encodeToFormUrl(formData);
     AJAXPostFunction("/get_user_messages_by_email", "Content-type", "application/x-www-form-urlencoded", data, function () {
         if(this.success) {
@@ -285,29 +286,32 @@ function postOtherWall(){
 
 function goToUser(form){
 	var token = getToken();
-	var toEmail = {
-		toEmail: form.otherUserEmail.value
+	var formData = {
+        token: token,
+		to_email: form.otherUserEmail.value
 	}
-    consol.log(toEmail);
+    console.log(formData.to_email);
 	form.otherUserEmail.value = "";
-	localStorage.setItem("toEmail", toEmail.toEmail);
-	//Lägg till if-sats för att kontrollera om det är false eller true
+	localStorage.setItem("toEmail", formData.to_email);
+    var data = encodeToFormUrl(formData);
+    AJAXPostFunction("/get_user_data_by_email", "Content-type", "application/x-www-form-urlencoded", data, function () {
+        if (this.success) {
+            document.getElementById("otherEmail").innerHTML = this.data.email;
+            document.getElementById("otherFirstname").innerHTML = this.data.firstname;
+            document.getElementById("otherFamilyname").innerHTML = this.data.familyname;
+            document.getElementById("otherGender").innerHTML = this.data.gender;
+            document.getElementById("otherCity").innerHTML = this.data.city;
+            document.getElementById("otherCountry").innerHTML = this.data.country;
+            showDiv(4);
+            document.getElementById("browseErrorBox").style.display = "none";
+        }
+        else {
+            document.getElementById("browseErrorBox").style.display = "block";
+            document.getElementById("browseErrorMessage").innerHTML = this.message;
+        }
+    });
+};
 
-	var otherUserInfo = serverstub.getUserDataByEmail(token, toEmail.toEmail);
-	if(otherUserInfo.success){
-		document.getElementById("otherEmail").innerHTML = otherUserInfo.data.email;
-		document.getElementById("otherFirstname").innerHTML = otherUserInfo.data.firstname;
-		document.getElementById("otherFamilyname").innerHTML = otherUserInfo.data.familyname;
-		document.getElementById("otherGender").innerHTML = otherUserInfo.data.gender;
-		document.getElementById("otherCity").innerHTML = otherUserInfo.data.city;
-		document.getElementById("otherCountry").innerHTML = otherUserInfo.data.country;
-		showDiv(4);
-		document.getElementById("browseErrorBox").style.display = "none";
-	}else{
-		document.getElementById("browseErrorBox").style.display = "block";
-		document.getElementById("browseErrorMessage").innerHTML = otherUserInfo.message;
-	}
-}
 
 
 var encodeToFormUrl = function(object) {
