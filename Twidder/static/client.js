@@ -259,15 +259,29 @@ function postWall(){
 function postOtherWall(){
 	var token = getToken();
 	var toEmail = localStorage.getItem("toEmail");
-	var userMessages = serverstub.getUserMessagesByEmail(token, toEmail);
-	var text = "";
-	for(i = 0; i < userMessages.data.length; i++){
-		if(i == 10){break}
-	text += userMessages.data[i].writer + ": " + userMessages.data[i].content.message + "<br>";
-}
-document.getElementById("otherWallContent").innerHTML = text;
-
-}
+    var formData = {
+        token: token,
+        email: toEmail
+    }
+    //var userMessages = serverstub.getUserMessagesByEmail(token, toEmail);
+    var data = encodeToFormUrl(formData);
+    AJAXPostFunction("/get_user_messages_by_email", "Content-type", "application/x-www-form-urlencoded", data, function () {
+        if(this.success) {
+            var text = "";
+            var counter = this.data.length;
+            for (i = 0; i < this.data.length; i++) {
+                if (i == 10) {
+                    break
+                }
+                counter =counter-1;
+                text += this.data[counter].writer + ": " + this.data[counter].message + "<br>";
+            }
+            document.getElementById("otherWallContent").innerHTML = text;
+        }else{
+            console.log(this.message)
+        }
+    });
+};
 
 function goToUser(form){
 	showDiv(4);

@@ -81,9 +81,10 @@ def server_get_user_messages_by_token(token):
 
 @app.route("/get_user_messages_by_email", methods=['POST'])
 def server_get_user_messages_by_email():
-    token = request.form['token']
-    email = request.form['email']
-    return get_user_messages_by_email(token, email)
+    if request.method == 'POST':
+        token = request.form['token']
+        email = request.form['email']
+        return get_user_messages_by_email(token, email)
 
 
 @app.route("/post_message", methods=['POST'])
