@@ -3,6 +3,8 @@ __author__ = 'wille'
 from flask import request
 from Twidder import database_helper
 from Twidder.session_functions import *
+from gevent.wsgi import WSGIServer
+from yourapplication import app
 
 app = Flask(__name__, static_url_path='/static')
 app.debug = True
@@ -99,4 +101,7 @@ def server_post_message():
 
 if __name__ == "__main__":
     app.debug = True
+    http_server = WSGIServer(('', 5000), app)
+    http_server.serve_forever()
+
     app.run()
