@@ -11,6 +11,7 @@ from geventwebsocket.handler import WebSocketHandler
 
 
 app = Flask(__name__, static_url_path='/static')
+app.config.from_object(__name__)
 app.debug = True
 app.secret_key = "jullan"
 
@@ -33,12 +34,14 @@ socket_connections = []
 
 @app.route("/init_db")
 def server_setup_db():
-    database_helper.init_db()
+    print "server init db"
+    init_db()
     return "Database is GAME ON!"
 
 
 @app.route("/")
 def hello():
+    print "hello"
     return app.send_static_file("client.html")
 
 @app.route('/api')
@@ -65,6 +68,7 @@ def server_sign_in():
         return sign_in(email, password)
 
     if request.environ.get('wsgi.websocket'):
+        print ("sign in wsgi stuff")
         ws = request.environ['wsgi.websocket']
         while True:
             ping = ws.receive()

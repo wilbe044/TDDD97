@@ -1,3 +1,4 @@
+from contextlib import closing
 
 __author__ = 'wille'
 from sqlite3 import dbapi2 as sqlite3
@@ -22,6 +23,11 @@ def get_db():
     if not hasattr(g, 'sqlite_db'):
         g.sqlite_db = connect_db()
     return g.sqlite_db
+
+def close_db():
+    if hasattr(g, 'sqlite_db'):
+        g.sqlite_db.close()
+
 
 
 def check_email_db(email):
@@ -72,8 +78,7 @@ def get_messages_db(email):
 
 def add_logged_in_user(token, email):
     c = get_db()
-    c.execute("INSERT INTO logged_in_users(token, email) VALUES (?,?)",
-              (token, email,))
+    c.execute("INSERT INTO logged_in_users(token, email) VALUES (?,?)", (token, email,))
     c.commit()
 
 def delete_logged_in_user(token):
@@ -93,7 +98,9 @@ def get_token_by_email(email):
 
 
 def init_db():
-    db = get_db()
-    with app.open_resource('database.schema', mode='r') as f:
-        db.cursor().executescript(f.read())
-    db.commit()
+    print "database helper init db"
+    with closing(connect_db()) as db:
+        with app.open_resource('database.schema', mode='r') as f:
+            db.cursor().executescript(f.read())
+            print "borde kort filen"
+        db.commit()
