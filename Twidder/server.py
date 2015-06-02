@@ -9,7 +9,6 @@ from geventwebsocket.handler import WebSocketHandler
 # from Twidder import app
 
 
-
 app = Flask(__name__, static_url_path='/static')
 app.config.from_object(__name__)
 app.debug = True
