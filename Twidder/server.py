@@ -94,7 +94,7 @@ def sign_out_socket(email):
             remove_socket_connection(email)
             soc_conn.send(json.dumps(data))
             log_out_token = get_token_by_email(email)
-            #delete_logged_in_user(log_out_token)
+            delete_logged_in_user(log_out_token)
 
 
 def remove_socket_connection(email):
@@ -125,15 +125,16 @@ def server_sign_out(token):
         if 'token' in session:
             data = get_user_data_by_token(session['token']).data
             print data
-            email = "wille@gmail.com"
+            #ska fixa sen sa vi kommer at email ovan--------------------------------------------
+            email = session['email']
             remove_socket_connection(email)
-            #deleted_user = delete_logged_in_user(session['token'])
-            #if deleted_user:
-            session.pop(token, None)
-            session.clear()
-            return jsonify(success=True, message="You are signed out!")
-            #else:
-                #return jsonify(success=False, message="You are not logged in!")
+            deleted_user = delete_logged_in_user(session['token'])
+            if deleted_user:
+                session.pop(token, None)
+                session.clear()
+                return jsonify(success=True, message="You are signed out!")
+            else:
+                return jsonify(success=False, message="You are not logged in!")
         else:
             return jsonify(success=False, message="No such user!")
 

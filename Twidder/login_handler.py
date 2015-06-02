@@ -21,7 +21,7 @@ def sign_in(email, password):
     if check_email_password_db(email, password):
         session['token'] = set_token()
         session['email'] = email
-        #add_logged_in_user(session['token'], email)
+        add_logged_in_user(session['token'], email)
         return jsonify(success=True, message="Successfully logged in!", data=session['token'])
     else:
         return jsonify(success=False, Message="Wrong email or password")
