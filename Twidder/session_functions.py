@@ -5,8 +5,8 @@ from Twidder.login_handler import *
 app = Flask(__name__)
 
 def change_password(token, old_password, new_password):
-    if in_session(token):
-        email = session[token]
+    if 'token' in session:
+        email = session['email']
         if check_email_password_db(email, old_password):
             if validate_password(new_password):
                 update_password_db(email, new_password)
@@ -20,12 +20,12 @@ def change_password(token, old_password, new_password):
 
 
 def get_user_data_by_token(token):
-    email = session[token]
-    return get_user_data_by_email(token, email)
+    email = session['email']
+    return get_user_data_by_email(session['token'], email)
 
 
 def get_user_data_by_email(token, email):
-    if in_session(token):
+    if 'token' in session:
         if check_email_db(email):
             user_data = get_user_data_db(email)
 
@@ -44,8 +44,8 @@ def get_user_data_by_email(token, email):
 
 
 def post_message(token, message, to_email):
-    from_email = session[token]
-    if in_session(token):
+    from_email = session['email']
+    if 'token' in session:
         if check_email_db(to_email):
             save_message_db(to_email, from_email, message)
             return jsonify(success=True, message="Message successfully posted.")
@@ -56,12 +56,12 @@ def post_message(token, message, to_email):
 
 
 def get_user_messages_by_token(token):
-    email = session[token]
-    return get_user_messages_by_email(token, email)
+    email = session['email']
+    return get_user_messages_by_email(session['token'], email)
 
 
 def get_user_messages_by_email(token, email):
-    if in_session(token):
+    if 'token' in session:
         if check_email_db(email):
             user_messages = get_messages_db(email)
             wall_messages = []

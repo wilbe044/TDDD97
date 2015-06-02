@@ -21,7 +21,7 @@ def sign_in(email, password):
     if check_email_password_db(email, password):
         session['token'] = set_token()
         session['email'] = email
-        add_logged_in_user(session['token'], email)
+        #add_logged_in_user(session['token'], email)
         return jsonify(success=True, message="Successfully logged in!", data=session['token'])
     else:
         return jsonify(success=False, Message="Wrong email or password")
@@ -43,13 +43,13 @@ def sign_up(email, password, firstname, familyname, gender, city, country):
         else:
             return jsonify(success=False, message="New password must contain at least 6 characters!")
 
-
-def sign_out(token):
-    if 'token' in session:
-        session.pop(token, None)
-        return jsonify(success=True, message="You are signed out!")
-    else:
-        return jsonify(success=False, message="You are not logged in!")
+#
+# def sign_out(token):
+#     if 'token' in session:
+#         session.pop(token, None)
+#         return jsonify(success=True, message="You are signed out!")
+#     else:
+#         return jsonify(success=False, message="You are not logged in!")
 
 
 def validate_password(password):

@@ -73,7 +73,8 @@ def server_sign_in():
         while True:
             ping = ws.receive()
             print ping
-            email = get_user_data_by_token(session['token'])['email']
+            #email = get_user_data_by_token(session['token'])['email']
+            email = session['email']
             sign_out_socket(email)
             connection = {"email": email, "connection": ws}
             global socket_connections
@@ -93,7 +94,7 @@ def sign_out_socket(email):
             remove_socket_connection(email)
             soc_conn.send(json.dumps(data))
             log_out_token = get_token_by_email(email)
-            delete_logged_in_user(log_out_token)
+            #delete_logged_in_user(log_out_token)
 
 
 def remove_socket_connection(email):
@@ -122,14 +123,17 @@ def server_sign_up():
 def server_sign_out(token):
     if request.method == 'GET':
         if 'token' in session:
-            remove_socket_connection(get_user_data_by_token(session['token'])['email'])
-            deleted_user = delete_logged_in_user(session['token'])
-            if deleted_user:
-                session.pop(token, None)
-                session.clear()
-                return jsonify(success=True, message="You are signed out!")
-            else:
-                return jsonify(success=False, message="You are not logged in!")
+            data = get_user_data_by_token(session['token']).data
+            print data
+            email = "wille@gmail.com"
+            remove_socket_connection(email)
+            #deleted_user = delete_logged_in_user(session['token'])
+            #if deleted_user:
+            session.pop(token, None)
+            session.clear()
+            return jsonify(success=True, message="You are signed out!")
+            #else:
+                #return jsonify(success=False, message="You are not logged in!")
         else:
             return jsonify(success=False, message="No such user!")
 

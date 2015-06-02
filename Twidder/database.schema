@@ -22,5 +22,5 @@ create table messages (
 
 create table logged_in_users (
   token text primary key not null,
-  email text not null,
+  email text not null
 );
