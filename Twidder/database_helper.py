@@ -60,7 +60,7 @@ def get_user_data_db(email):
 
 def save_message_db(to_email, from_email, message):
     c = get_db()
-    c.execute("insert into messages(to_email, from_email, message) values (?,?,?)", (to_email, from_email, message))
+    c.execute("insert into messages(to_email, from_email, message) values (?,?,?)", (to_email, from_email, message,))
     c.commit()
 
 
@@ -69,6 +69,23 @@ def get_messages_db(email):
     user_messages = c.execute("select * from messages where to_email = ?", (email,))
     c.commit
     return user_messages.fetchall()
+
+def add_logged_in_user(token, email):
+    c = get_db()
+    c.execute("INSERT INTO logged_in_users(token, email) VALUES (?,?)",
+              (token, email,))
+    c.commit()
+
+def delete_logged_in_user(token):
+    c = get_db()
+    c.execute("delete from logged_in_users where token = ?", (token,))
+    c.commit()
+
+def get_token_by_email(email):
+    c = get_db()
+    token = c.execute("select token from logged_in_users where email = ?", (email,))
+    c.commit
+    return token
 
 
 def init_db():

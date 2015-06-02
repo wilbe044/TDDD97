@@ -71,8 +71,9 @@ def sign_out_socket(email):
             data = {"success" : True, "message": "You have logged in in another browser"}
             remove_socket_connection(email)
             soc_conn.send(json.dumps(data))
-            log_out_token = database_helper.get_user_token_by_email(email)['token']
-            database_helper.delete_logged_in_user(log_out_token)
+            log_out_token = get_token_by_email(email)
+            delete_logged_in_user(log_out_token)
+
 
 
 @app.route("/sign_up", methods=['POST'])
