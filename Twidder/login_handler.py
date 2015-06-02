@@ -5,6 +5,7 @@ from flask import Flask, jsonify, session
 from Twidder.database_helper import *
 
 
+
 app = Flask(__name__)
 
 
@@ -44,7 +45,7 @@ def sign_up(email, password, firstname, familyname, gender, city, country):
 
 
 def sign_out(token):
-    if in_session(token):
+    if 'token' in session:
         session.pop(token, None)
         return jsonify(success=True, message="You are signed out!")
     else:
@@ -76,7 +77,7 @@ def check_form(email, password, firstname, familyname, gender, city, country):
 
 def in_session(token):
     try:
-        if session[token]:
+        if session['token']:
             return True
     except:
         pass

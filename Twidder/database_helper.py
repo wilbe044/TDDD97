@@ -80,6 +80,10 @@ def delete_logged_in_user(token):
     c = get_db()
     c.execute("delete from logged_in_users where token = ?", (token,))
     c.commit()
+    if c is None:
+        return False
+    else:
+        return True
 
 def get_token_by_email(email):
     c = get_db()

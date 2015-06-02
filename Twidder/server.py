@@ -75,7 +75,6 @@ def sign_out_socket(email):
             delete_logged_in_user(log_out_token)
 
 
-
 def remove_socket_connection(email):
     global socket_connections
     for conn in socket_connections:
@@ -101,7 +100,17 @@ def server_sign_up():
 @app.route("/sign_out/<token>", methods=['GET'])
 def server_sign_out(token):
     if request.method == 'GET':
-        return sign_out(token)
+        if 'token' in session:
+            remove_socket_connection(get_user_data_by_token(session['token'])['email'])
+            deleted_user = delete_logged_in_user(session['token'])
+            if deleted_user:
+                session.pop(token, None)
+                session.clear()
+                return jsonify(success=True, message="You are signed out!")
+            else:
+                return jsonify(success=False, message="You are not logged in!")
+        else:
+            return jsonify(success=False, message="No such user!")
 
 
 @app.route("/change_password", methods=['POST'])
