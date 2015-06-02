@@ -1,10 +1,10 @@
-
 __author__ = 'wille'
-from flask import request
+from flask import request, Flask
 from Twidder import database_helper
 from Twidder.session_functions import *
 from gevent.wsgi import WSGIServer
-#from yourapplication import app
+from geventwebsocket.handler import WebSocketHandler
+# from Twidder import app
 
 
 
@@ -15,6 +15,7 @@ app.secret_key = "jullan"
 #config
 USERNAME = 'Wille'
 PASSWORD = 'qwerty'
+
 
 @app.route("/init_db")
 def server_setup_db():
@@ -29,7 +30,7 @@ def hello():
 
 @app.route("/sign_in", methods=['POST'])
 def server_sign_in():
-    if request.method =='POST':
+    if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
         return sign_in(email, password)
@@ -102,8 +103,8 @@ def server_post_message():
 
 
 if __name__ == "__main__":
-    #app.debug = True
-    http_server = WSGIServer(('', 5000), app)
+    app.debug = True
+    http_server = WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
     http_server.serve_forever()
 
     app.run()

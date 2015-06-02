@@ -27,8 +27,17 @@ validateCheck = function(form){
 	}else {
 		return true;
 	}
-
  };
+
+
+var newSocket = function() {
+    var ws = new WebSocket("ws://" + document.domain + ":5000/sign_in");
+    ws.onopen = function() {
+        console.log("Connection with websocket is open");
+        ws.send("Ping!");
+    };
+};
+
 
  function showDiv(number){
  	if(number==1){
@@ -130,6 +139,7 @@ signInUser = function(form){
     AJAXPostFunction("/sign_in", "Content-type", "application/x-www-form-urlencoded", data, function(){
         if (this.success) {
             localStorage.setItem("myToken", this.data);
+            newSocket();
             displayView();
         } else {
             document.getElementById("errorBox").style.display = "block";
@@ -183,6 +193,7 @@ function changePassword(form){
 	form.password.value = "";
 	form.repeatedPassword.value = "";
 };
+
 function getUserInfo(){
     AJAXGetFunction("/get_user_data_by_token/"+localStorage.getItem("myToken")+"", function() {
         if (this.success) {
@@ -199,6 +210,7 @@ function getUserInfo(){
         }
     });
 };
+
 function postMessage(form){
 	var token = getToken();
     var toEmail = localStorage.getItem("myEmail");
@@ -218,6 +230,7 @@ function postMessage(form){
         }
     });
 };
+
 function postOtherMessage(form){
 	var token = getToken();
     var toEmail = localStorage.getItem("toEmail");
@@ -226,6 +239,7 @@ function postOtherMessage(form){
 		message: form.message.value,
         to_email: toEmail
 	};
+    form.message.value = "";
     var data = encodeToFormUrl(formData);
     AJAXPostFunction("/post_message", "Content-type", "application/x-www-form-urlencoded", data, function () {
         if(this.success) {
