@@ -36,6 +36,19 @@ var newSocket = function() {
         console.log("Connection with websocket is open");
         ws.send("Ping!");
     };
+
+    ws.onclose = function() {
+      console.log("The connections has closed.......:::::::")
+    };
+
+    ws.onmessage = function(response) {
+        console.log("MEssage received from server")
+        data = JSON.parse(response.data);
+        if (data.success) {
+            localStorage.clear();
+            displayView();
+        }
+    };
 };
 
 

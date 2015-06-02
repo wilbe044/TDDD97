@@ -1,3 +1,5 @@
+import json
+
 __author__ = 'wille'
 from flask import request, Flask
 from Twidder import database_helper
@@ -19,13 +21,13 @@ PASSWORD = 'qwerty'
 #added for websocket
 socket_connections = []
 
-@app.before_request
-def before_request():
-    database_helper.get_db()
+#@app.before_request
+#def before_request():
+ #   get_db()
 
-@app.teardown_request
-def teardown_request(exception):
-    database_helper.close_db()
+#@app.teardown_request
+#def teardown_request(exception):
+ #   close_db()
 
 #end
 
@@ -38,6 +40,21 @@ def server_setup_db():
 @app.route("/")
 def hello():
     return app.send_static_file("client.html")
+
+@app.route('/api')
+def api():
+    if request.environ.get('wsgi.websocket'):
+        ws = request.environ['wsgi.websocket']
+        email = ws.receive()
+        print email
+        logged_in = True
+        if logged_in:
+            data = {"success": True, "message": "hello"}
+            ws.send(json.dumps(data))
+        else:
+            ws.send("You are logged in")
+    return ""
+
 
 
 @app.route("/sign_in", methods=['POST'])
