@@ -16,6 +16,18 @@ app.secret_key = "jullan"
 USERNAME = 'Wille'
 PASSWORD = 'qwerty'
 
+#added for websocket
+socket_connections = []
+
+@app.before_request
+def before_request():
+    database_helper.get_db()
+
+@app.teardown_request
+def teardown_request(exception):
+    database_helper.close_db()
+
+#end
 
 @app.route("/init_db")
 def server_setup_db():
@@ -34,6 +46,33 @@ def server_sign_in():
         email = request.form['email']
         password = request.form['password']
         return sign_in(email, password)
+
+    if request.environ.get('wsgi.websocket'):
+        ws = request.environ['wsgi.websocket']
+        while True:
+            ping = ws.receive()
+            print ping
+            email = get_user_data_by_token(session['token'])['email']
+            sign_out_socket(email)
+            connection = {"email": email, "connection": ws}
+            global socket_connections
+            socket_connections.append(connection)
+            print socket_connections
+
+        return ""
+
+
+def sign_out_socket(email):
+    global socket_connections
+    for conn in socket_connections:
+        if conn["email"] == email:
+            soc_conn = conn["connection"]
+            print soc_conn
+            data = {"success" : True, "message": "You have logged in in another browser"}
+            remove_socket_connection(email)
+            soc_conn.send(json.dumps(data))
+            log_out_token = database_helper.get_user_token_by_email(email)['token']
+            database_helper.delete_logged_in_user(log_out_token)
 
 
 @app.route("/sign_up", methods=['POST'])
