@@ -75,6 +75,13 @@ def sign_out_socket(email):
             delete_logged_in_user(log_out_token)
 
 
+def remove_socket_connection(email):
+    global socket_connections
+    for conn in socket_connections:
+        if conn['email'] == email:
+            socket_connections.remove(conn)
+    print socket_connections
+
 
 @app.route("/sign_up", methods=['POST'])
 def server_sign_up():
