@@ -1,4 +1,6 @@
 
+var ws = null;
+
 displayView = function(){
 	var token = getToken();
 // the code required to display a view
@@ -31,10 +33,16 @@ validateCheck = function(form){
 
 
 var newSocket = function() {
-    var ws = new WebSocket("ws://" + document.domain + ":5000/sign_in");
-    ws.onopen = function() {
-        console.log("Connection with websocket is open")
-        ws.send("Ping!");
+    // Establish a connection with the socket API if no connections is initiated
+    if (ws == null) {
+        ws = new WebSocket("ws://" + document.domain + ":5000/socketapi");
+    } else {
+        console.log("You are already connected to the socket")
+    }
+
+    ws.onopen = function () {
+        console.log("Connection with websocket open")
+        ws.send(JSON.stringify({"message": "I just connected // Client"}));
     };
 
     ws.onclose = function() {

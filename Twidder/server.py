@@ -44,20 +44,56 @@ def hello():
     print "hello"
     return app.send_static_file("client.html")
 
-@app.route('/api')
-def api():
+@app.route('/socketapi', methods=['GET'])
+def socket_api():
     if request.environ.get('wsgi.websocket'):
+        global socket_connections
         ws = request.environ['wsgi.websocket']
-        email = ws.receive()
-        print email
-        logged_in = True
-        if logged_in:
-            data = {"success": True, "message": "hello"}
-            ws.send(json.dumps(data))
-        else:
-            ws.send("You are logged in")
+        #check that an email do not have two connections
+        update_socket_connections()
+        email = logged_in_users[session['token']]
+        connection = {"email": email, "connection" : ws}
+        socket_connections.append(connection)
+        print "Saved ", ws, "to socket connection list"
+        print "Some current socket connections"
+        i = 1
+        #Log current connections
+        for conn in socket_connections:
+            print "Connection #", i, " Socket: ", conn
+            i += 1
+        while True:
+            #remove connection if it is closed
+            if ws.receive() is None:
+                for conn in socket_connections:
+                    if conn['connection'] == ws:
+                        socket_connections.remove(conn)
+                print "The connection with the socket has closed"
+                return ""
+            #Receive and parse JSON object
+            else:
+                message = ws.receive()
+                print "message received: ", message
+                print "websocket: ", ws
+                message = json.loads(message)
+                print message["message"]
+                return ""
     return ""
 
+
+
+# Checks if there is a connection with the same email in the connection list
+# If conneciton exist the user is logged out and info is sent to client to update data
+def update_socket_connections():
+    global socket_connections
+    email = logged_in_users[session['token']]
+    for conn in socket_connections:
+        if conn['email'] == email:
+            socket_conn = conn["connection"]
+            message = {"action" : "signoutSocket", "message" : "You have logged in in another browser"}
+            socket_conn.send(json.dumps(message))
+            socket_connections.remove(conn)
+            del logged_in_users[session['token']]
+    print socket_connections
 
 
 @app.route("/sign_in", methods=['POST', 'GET'])
@@ -76,23 +112,23 @@ def server_sign_in():
             return jsonify(success=False, Message="Wrong email or password")
 
 
-    if request.environ.get('wsgi.websocket'):
-        print "sign in wsgi stuff"
-        ws = request.environ['wsgi.websocket']
-        while True:
-            ping = ws.receive()
-            print ping
-            #email = get_logged_in_email_by_token_db(session['token'])
-            email = logged_in_users[session['token']]
-            print email
-            sign_out_socket(email)
-            connection = {"email": email, "connection": ws}
-            global socket_connections
-            socket_connections.append(connection)
-            print "ovan socket connections"
-            print socket_connections
-
-        return ""
+    # if request.environ.get('wsgi.websocket'):
+    #     print "sign in wsgi stuff"
+    #     ws = request.environ['wsgi.websocket']
+    #     while True:
+    #         ping = ws.receive()
+    #         print ping
+    #         #email = get_logged_in_email_by_token_db(session['token'])
+    #         email = logged_in_users[session['token']]
+    #         print email
+    #         sign_out_socket(email)
+    #         connection = {"email": email, "connection": ws}
+    #         global socket_connections
+    #         socket_connections.append(connection)
+    #         print "ovan socket connections"
+    #         print socket_connections
+    #
+    #     return ""
 
 
 def sign_out_socket(email):
