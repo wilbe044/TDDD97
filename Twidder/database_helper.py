@@ -93,15 +93,18 @@ def delete_logged_in_user_db(token):
 def get_logged_in_token_by_email_db(email):
     c = get_db()
     token = c.execute("select token from logged_in_users where email = ?", (email,))
-    c.commit
+    c.commit()
     return token
 
 
 def get_logged_in_email_by_token_db(token):
     c = get_db()
-    email = c.execute("select email from logged_in_users where token = ?" (token))
+    email = c.execute("select email from logged_in_users where token = ?", (token,))
     c.commit()
-    return email
+    if email is not None:
+        return email
+    else:
+        return False
 
 
 def init_db():

@@ -67,7 +67,7 @@ def server_sign_in():
         return sign_in(email, password)
 
     if request.environ.get('wsgi.websocket'):
-        print ("sign in wsgi stuff")
+        print "sign in wsgi stuff"
         ws = request.environ['wsgi.websocket']
         while True:
             ping = ws.receive()
@@ -98,10 +98,12 @@ def sign_out_socket(email):
 
 def remove_socket_connection(email):
     global socket_connections
+    print socket_connections
     for conn in socket_connections:
         if conn['email'] == email:
             socket_connections.remove(conn)
     print socket_connections
+    print "socket connection removed"
 
 
 @app.route("/sign_up", methods=['POST'])
@@ -122,10 +124,11 @@ def server_sign_up():
 def server_sign_out(token):
     if request.method == 'GET':
         if 'token' in session:
-            data = get_user_data_by_token(session['token']).data
-            print data
+            #data = get_user_data_by_token(session['token']).data
+            #print data
             #ska fixa sen sa vi kommer at email ovan --------------------------------------------
-            email = session['email']
+            #email = session['email']
+            email = get_logged_in_email_by_token_db(token)
             remove_socket_connection(email)
             deleted_user = delete_logged_in_user_db(session['token'])
             if deleted_user:

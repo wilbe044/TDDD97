@@ -33,16 +33,16 @@ validateCheck = function(form){
 var newSocket = function() {
     var ws = new WebSocket("ws://" + document.domain + ":5000/sign_in");
     ws.onopen = function() {
-        console.log("Connection with websocket is open");
+        console.log("Connection with websocket is open")
         ws.send("Ping!");
     };
 
     ws.onclose = function() {
-      console.log("The connections has closed.......:::::::")
+      console.log("The connections has CLOSED")
     };
 
     ws.onmessage = function(response) {
-        console.log("MEssage received from server")
+        console.log("Message received from server")
         data = JSON.parse(response.data);
         if (data.success) {
             localStorage.clear();
@@ -144,6 +144,7 @@ signUpUser = function(form){
 };
 
 signInUser = function(form){
+    "use strict";
 	var userData = {
 		email: form.email.value,
 		password: form.password.value
@@ -152,8 +153,8 @@ signInUser = function(form){
     AJAXPostFunction("/sign_in", "Content-type", "application/x-www-form-urlencoded", data, function(){
         if (this.success) {
             localStorage.setItem("myToken", this.data);
-            newSocket();
             displayView();
+            newSocket();
         } else {
             document.getElementById("errorBox").style.display = "block";
 		    document.getElementById("errorMessage").innerHTML = "FEL"; //object.message;
