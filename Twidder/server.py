@@ -72,12 +72,12 @@ def server_sign_in():
         while True:
             ping = ws.receive()
             print ping
-            #email = get_user_data_by_token(session['token'])['email']
-            email = session['email']
+            email = get_logged_in_email_by_token_db(session['token'])
             sign_out_socket(email)
             connection = {"email": email, "connection": ws}
             global socket_connections
             socket_connections.append(connection)
+            print "ovan socket connections"
             print socket_connections
 
         return ""
@@ -92,8 +92,8 @@ def sign_out_socket(email):
             data = {"success" : True, "message": "You have logged in in another browser"}
             remove_socket_connection(email)
             soc_conn.send(json.dumps(data))
-            log_out_token = get_token_by_email(email)
-            delete_logged_in_user(log_out_token)
+            log_out_token = get_logged_in_email_by_token_db(email)
+            delete_logged_in_user_db(log_out_token)
 
 
 def remove_socket_connection(email):
@@ -124,10 +124,10 @@ def server_sign_out(token):
         if 'token' in session:
             data = get_user_data_by_token(session['token']).data
             print data
-            #ska fixa sen sa vi kommer at email ovan--------------------------------------------
+            #ska fixa sen sa vi kommer at email ovan --------------------------------------------
             email = session['email']
             remove_socket_connection(email)
-            deleted_user = delete_logged_in_user(session['token'])
+            deleted_user = delete_logged_in_user_db(session['token'])
             if deleted_user:
                 session.pop(token, None)
                 session.clear()
