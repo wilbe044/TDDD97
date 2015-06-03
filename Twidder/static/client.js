@@ -175,10 +175,11 @@ signOutUser = function(){
         if(this.success){
             localStorage.removeItem("myToken");
             displayView();
-            console.log(this.message)
+            console.log(this.message);
+            ws = null;
         }
         else{
-            console.log(this.message)
+            console.log(this.message);
         }
     });
 };

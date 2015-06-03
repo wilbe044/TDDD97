@@ -148,7 +148,6 @@ def sign_out_socket(email):
 
 def remove_socket_connection(email):
     global socket_connections
-    print socket_connections
     for conn in socket_connections:
         if conn['email'] == email:
             socket_connections.remove(conn)
@@ -174,17 +173,9 @@ def server_sign_up():
 def server_sign_out(token):
     if request.method == 'GET':
         if 'token' in session:
-            #data = get_user_data_by_token(session['token']).data
-            #print data
-            #ska fixa sen sa vi kommer at email ovan --------------------------------------------
-            #email = session['email']
-            #email = get_logged_in_email_by_token_db(token)
             email = logged_in_users[token]
             remove_socket_connection(email)
-            #delete_logged_in_user_db(token)
-            print logged_in_users
             del logged_in_users[token]
-            print logged_in_users
             session.pop(token, None)
             session.clear()
             return jsonify(success=True, message="You are signed out!")
