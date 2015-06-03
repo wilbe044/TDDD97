@@ -20,7 +20,7 @@ PASSWORD = 'qwerty'
 
 #added for websocket
 socket_connections = []
-logged_in_users = {}
+logged_in_users = []
 
 #@app.before_request
 #def before_request():
@@ -51,7 +51,7 @@ def socket_api():
         ws = request.environ['wsgi.websocket']
         #check that an email do not have two connections
         update_socket_connections()
-        email = logged_in_users[session['token']]
+        email = session['email']
         connection = {"email": email, "connection" : ws}
         socket_connections.append(connection)
         print "Saved ", ws, "to socket connection list"
@@ -70,13 +70,13 @@ def socket_api():
                 print "The connection with the socket has closed"
                 return ""
             #Receive and parse JSON object
-            else:
-                message = ws.receive()
-                print "message received: ", message
-                print "websocket: ", ws
-                message = json.loads(message)
-                print message["message"]
-                return ""
+            # else:
+            #     message = ws.receive()
+            #     print "message received: ", message
+            #     print "websocket: ", ws
+            #     message = json.loads(message)
+            #     print message["message"]
+            #     return ""
     return ""
 
 
@@ -85,14 +85,13 @@ def socket_api():
 # If conneciton exist the user is logged out and info is sent to client to update data
 def update_socket_connections():
     global socket_connections
-    email = logged_in_users[session['token']]
+    email = session['email']
     for conn in socket_connections:
         if conn['email'] == email:
             socket_conn = conn["connection"]
             message = {"action" : "signOutSocket", "message" : "You have logged in in another browser"}
             socket_conn.send(json.dumps(message))
             socket_connections.remove(conn)
-            del logged_in_users[session['token']]
     print socket_connections
 
 
@@ -104,7 +103,13 @@ def server_sign_in():
         if check_email_password_db(email, password):
             session['token'] = set_token()
             session['email'] = email
-            logged_in_users[session['token']] = email
+            for e in logged_in_users:
+                if e['email'] == email:
+                    logged_in_users.remove(e)
+                    print logged_in_users
+            logged_user = {"email": email, "token" : session['token']}
+            logged_in_users.append(logged_user)
+            print "HaR aR LISTAN MED LOGGED IN USERS"
             print logged_in_users
         #add_logged_in_user_db(session['token'], email)
             return jsonify(success=True, message="Successfully logged in!", data=session['token'])
