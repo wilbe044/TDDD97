@@ -20,6 +20,7 @@ PASSWORD = 'qwerty'
 
 #added for websocket
 socket_connections = []
+logged_in_users = {}
 
 #@app.before_request
 #def before_request():
@@ -64,7 +65,16 @@ def server_sign_in():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        return sign_in(email, password)
+        if check_email_password_db(email, password):
+            session['token'] = set_token()
+            session['email'] = email
+            logged_in_users[session['token']] = email
+            print logged_in_users
+        #add_logged_in_user_db(session['token'], email)
+            return jsonify(success=True, message="Successfully logged in!", data=session['token'])
+        else:
+            return jsonify(success=False, Message="Wrong email or password")
+
 
     if request.environ.get('wsgi.websocket'):
         print "sign in wsgi stuff"
@@ -72,7 +82,8 @@ def server_sign_in():
         while True:
             ping = ws.receive()
             print ping
-            email = get_logged_in_email_by_token_db(session['token'])
+            #email = get_logged_in_email_by_token_db(session['token'])
+            email = logged_in_users[session['token']]
             print email
             sign_out_socket(email)
             connection = {"email": email, "connection": ws}
@@ -94,8 +105,9 @@ def sign_out_socket(email):
             data = {"success" : True, "message": "You have logged in in another browser"}
             remove_socket_connection(email)
             soc_conn.send(json.dumps(data))
-            log_out_token = get_logged_in_email_by_token_db(email)
-            delete_logged_in_user_db(log_out_token)
+            #log_out_token = get_logged_in_email_by_token_db(email)
+            #delete_logged_in_user_db(log_out_token)
+            del logged_in_users[session['token']]
 
 
 def remove_socket_connection(email):
@@ -130,17 +142,18 @@ def server_sign_out(token):
             #print data
             #ska fixa sen sa vi kommer at email ovan --------------------------------------------
             #email = session['email']
-            email = get_logged_in_email_by_token_db(token)
+            #email = get_logged_in_email_by_token_db(token)
+            email = logged_in_users[token]
             remove_socket_connection(email)
-            deleted_user = delete_logged_in_user_db(session['token'])
-            if deleted_user:
-                session.pop(token, None)
-                session.clear()
-                return jsonify(success=True, message="You are signed out!")
-            else:
-                return jsonify(success=False, message="You are not logged in!")
+            delete_logged_in_user_db(token)
+            print logged_in_users
+            del logged_in_users[token]
+            print logged_in_users
+            session.pop(token, None)
+            session.clear()
+            return jsonify(success=True, message="You are signed out!")
         else:
-            return jsonify(success=False, message="No such user!")
+            return jsonify(success=False, message="You are not signed in!")
 
 
 @app.route("/change_password", methods=['POST'])

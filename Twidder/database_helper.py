@@ -76,24 +76,22 @@ def get_messages_db(email):
     c.commit()
     return user_messages.fetchall()
 
+
 def add_logged_in_user_db(token, email):
     c = get_db()
     c.execute("INSERT INTO logged_in_users(token, email) VALUES (?,?)", (token, email,))
     c.commit()
 
+
 def delete_logged_in_user_db(token):
     c = get_db()
-    c.execute("delete from logged_in_users where token = ?", (token,))
+    c.execute("DELETE FROM logged_in_users WHERE token = ?", (token,))
     c.commit()
-    if c is None:
-        return False
-    else:
-        return True
+
 
 def get_logged_in_token_by_email_db(email):
     c = get_db()
     token = c.execute("select token from logged_in_users where email = ?", (email,))
-    print token
     c.commit()
     return token
 
