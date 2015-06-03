@@ -73,7 +73,7 @@ def save_message_db(to_email, from_email, message):
 def get_messages_db(email):
     c = get_db()
     user_messages = c.execute("select * from messages where to_email = ?", (email,))
-    c.commit
+    c.commit()
     return user_messages.fetchall()
 
 def add_logged_in_user_db(token, email):
@@ -93,6 +93,7 @@ def delete_logged_in_user_db(token):
 def get_logged_in_token_by_email_db(email):
     c = get_db()
     token = c.execute("select token from logged_in_users where email = ?", (email,))
+    print token
     c.commit()
     return token
 
@@ -101,6 +102,7 @@ def get_logged_in_email_by_token_db(token):
     c = get_db()
     email = c.execute("select email from logged_in_users where token = ?", (token,))
     c.commit()
+    print email
     if email is not None:
         return email
     else:
@@ -108,9 +110,7 @@ def get_logged_in_email_by_token_db(token):
 
 
 def init_db():
-    print "database helper init db"
     with closing(connect_db()) as db:
         with app.open_resource('database.schema', mode='r') as f:
             db.cursor().executescript(f.read())
-            print "borde kort filen"
         db.commit()

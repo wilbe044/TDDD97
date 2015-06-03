@@ -143,8 +143,8 @@ signUpUser = function(form){
         }
 };
 
-signInUser = function(form){
-    "use strict";
+var signInUser = function(form){
+    //"use strict";
 	var userData = {
 		email: form.email.value,
 		password: form.password.value

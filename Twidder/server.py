@@ -59,7 +59,7 @@ def api():
 
 
 
-@app.route("/sign_in", methods=['POST'])
+@app.route("/sign_in", methods=['POST', 'GET'])
 def server_sign_in():
     if request.method == 'POST':
         email = request.form['email']
@@ -73,6 +73,7 @@ def server_sign_in():
             ping = ws.receive()
             print ping
             email = get_logged_in_email_by_token_db(session['token'])
+            print email
             sign_out_socket(email)
             connection = {"email": email, "connection": ws}
             global socket_connections
@@ -84,6 +85,7 @@ def server_sign_in():
 
 
 def sign_out_socket(email):
+    print "i sign out socket"
     global socket_connections
     for conn in socket_connections:
         if conn["email"] == email:
