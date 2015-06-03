@@ -145,7 +145,7 @@ def server_sign_out(token):
             #email = get_logged_in_email_by_token_db(token)
             email = logged_in_users[token]
             remove_socket_connection(email)
-            delete_logged_in_user_db(token)
+            #delete_logged_in_user_db(token)
             print logged_in_users
             del logged_in_users[token]
             print logged_in_users
