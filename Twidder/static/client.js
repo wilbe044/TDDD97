@@ -1,6 +1,7 @@
 
 var ws = null;
 
+
 displayView = function(){
 	var token = getToken();
 // the code required to display a view
@@ -49,12 +50,20 @@ var newSocket = function() {
       console.log("The connections has CLOSED")
     };
 
-    ws.onmessage = function(response) {
-        console.log("Message received from server")
-        data = JSON.parse(response.data);
-        if (data.success) {
+    ws.onmessage = function (response) {
+        console.log("Message received from server");
+        var data = JSON.parse(response.data);
+        console.log(response.data)
+
+        //Handle sign out login with same account
+
+        if (data.action == "signOutSocket") {
             localStorage.clear();
             displayView();
+            //displayError(data.message);
+            console.log(data.message);
+            ws.close();
+            ws = null;
         }
     };
 };
@@ -173,7 +182,7 @@ var signInUser = function(form){
 signOutUser = function(){
     AJAXGetFunction("/sign_out/"+localStorage.getItem("myToken")+"", function() {
         if(this.success){
-            localStorage.removeItem("myToken");
+            localStorage.clear();
             displayView();
             console.log(this.message);
             ws = null;
@@ -196,7 +205,7 @@ function changePassword(form){
 		token: token,
         old_password: form.oldPassword.value,
 		new_password: form.password.value
-	}
+	};
 	if(validateCheck(form)) {
         var data = encodeToFormUrl(formData);
         AJAXPostFunction("/change_password", "Content-type", "application/x-www-form-urlencoded", data, function () {
@@ -301,7 +310,7 @@ function postOtherWall(){
     var formData = {
         token: token,
         email: toEmail
-    }
+    };
     var data = encodeToFormUrl(formData);
     AJAXPostFunction("/get_user_messages_by_email", "Content-type", "application/x-www-form-urlencoded", data, function () {
         if(this.success) {

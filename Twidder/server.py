@@ -89,7 +89,7 @@ def update_socket_connections():
     for conn in socket_connections:
         if conn['email'] == email:
             socket_conn = conn["connection"]
-            message = {"action" : "signoutSocket", "message" : "You have logged in in another browser"}
+            message = {"action" : "signOutSocket", "message" : "You have logged in in another browser"}
             socket_conn.send(json.dumps(message))
             socket_connections.remove(conn)
             del logged_in_users[session['token']]
@@ -110,25 +110,6 @@ def server_sign_in():
             return jsonify(success=True, message="Successfully logged in!", data=session['token'])
         else:
             return jsonify(success=False, Message="Wrong email or password")
-
-
-    # if request.environ.get('wsgi.websocket'):
-    #     print "sign in wsgi stuff"
-    #     ws = request.environ['wsgi.websocket']
-    #     while True:
-    #         ping = ws.receive()
-    #         print ping
-    #         #email = get_logged_in_email_by_token_db(session['token'])
-    #         email = logged_in_users[session['token']]
-    #         print email
-    #         sign_out_socket(email)
-    #         connection = {"email": email, "connection": ws}
-    #         global socket_connections
-    #         socket_connections.append(connection)
-    #         print "ovan socket connections"
-    #         print socket_connections
-    #
-    #     return ""
 
 
 def sign_out_socket(email):
