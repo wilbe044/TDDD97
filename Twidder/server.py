@@ -117,21 +117,6 @@ def server_sign_in():
             return jsonify(success=False, Message="Wrong email or password")
 
 
-def sign_out_socket(email):
-    print "i sign out socket"
-    global socket_connections
-    for conn in socket_connections:
-        if conn["email"] == email:
-            soc_conn = conn["connection"]
-            print soc_conn
-            data = {"success" : True, "message": "You have logged in in another browser"}
-            remove_socket_connection(email)
-            soc_conn.send(json.dumps(data))
-            #log_out_token = get_logged_in_email_by_token_db(email)
-            #delete_logged_in_user_db(log_out_token)
-            del logged_in_users[session['token']]
-
-
 def remove_socket_connection(email):
     global socket_connections
     for conn in socket_connections:
