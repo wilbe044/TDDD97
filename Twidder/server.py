@@ -159,11 +159,13 @@ def server_sign_up():
 def server_sign_out(token):
     if request.method == 'GET':
         if 'token' in session:
-            email = logged_in_users[token]
-            remove_socket_connection(email)
-            del logged_in_users[token]
-            session.pop(token, None)
-            session.clear()
+            for e in logged_in_users:
+                if e['token'] == token:
+                    email = e['email']
+                    remove_socket_connection(email)
+                    logged_in_users.remove(e)
+                    session.pop(token, None)
+                    session.clear()
             return jsonify(success=True, message="You are signed out!")
         else:
             return jsonify(success=False, message="You are not signed in!")
