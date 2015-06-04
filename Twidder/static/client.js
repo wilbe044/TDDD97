@@ -370,14 +370,18 @@ var encodeToFormUrl = function(object) {
     return data;
 };
 
+
+//Allows to drop something in a div.
 function allowDrop(ev) {
     ev.preventDefault();
 }
 
+//Function that drags an element.
 function drag(ev) {
     ev.dataTransfer.setData("text", ev.target.id);
 }
 
+//The function that drops an element.
 function drop(ev) {
     ev.preventDefault();
     var data = ev.dataTransfer.getData("text");
