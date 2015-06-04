@@ -41,7 +41,6 @@ def server_setup_db():
 
 @app.route("/")
 def hello():
-    print "hello"
     return app.send_static_file("client.html")
 
 @app.route('/socketapi', methods=['GET'])
@@ -95,6 +94,7 @@ def update_socket_connections():
     print socket_connections
 
 
+
 @app.route("/sign_in", methods=['POST', 'GET'])
 def server_sign_in():
     if request.method == 'POST':
@@ -109,8 +109,13 @@ def server_sign_in():
                     print logged_in_users
             logged_user = {"email": email, "token" : session['token']}
             logged_in_users.append(logged_user)
-            print "HaR aR LISTAN MED LOGGED IN USERS"
-            print logged_in_users
+            user_count = len(logged_in_users)
+            print user_count
+            global socket_connections
+            message = {"action" : "updateUserCount", "message" : "Updated user count", "count": user_count}
+            for conn in socket_connections:
+                socket_conn= conn["connection"]
+                socket_conn.send(json.dumps(message))
         #add_logged_in_user_db(session['token'], email)
             return jsonify(success=True, message="Successfully logged in!", data=session['token'])
         else:
@@ -149,6 +154,13 @@ def server_sign_out(token):
                     email = e['email']
                     remove_socket_connection(email)
                     logged_in_users.remove(e)
+                    user_count = len(logged_in_users)
+                    print user_count
+                    global socket_connections
+                    message = {"action" : "updateUserCount", "message" : "Updated user count", "count": user_count}
+                    for conn in socket_connections:
+                        socket_conn= conn["connection"]
+                        socket_conn.send(json.dumps(message))
                     session.pop(token, None)
                     session.clear()
             return jsonify(success=True, message="You are signed out!")
@@ -227,6 +239,16 @@ def get_number_messages():
                 return jsonify(success = False, message = "Total number of messages could not be counted")
             else:
                 return jsonify(success=True, message = "Total number of messages counted", data = str(message_count))
+
+
+# counts and returns the total number of online users on Twidder
+@app.route('/get_number_users', methods=['GET'])
+def get_number_users():
+    if request.method == 'GET':
+        if 'token' in session:
+            user_count = len(logged_in_users)
+            print user_count
+            return jsonify(success=True, message = "Total number of online users counted", data = str(user_count))
 
 
 if __name__ == "__main__":

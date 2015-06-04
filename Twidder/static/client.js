@@ -12,6 +12,7 @@ displayView = function(){
 	getUserInfo();
 	postWall();
     getNumberMessages();
+    getNumberUsers()
 }
 };
 
@@ -69,6 +70,11 @@ var newSocket = function() {
 
         if (data.action == "updateMessages") {
             document.getElementById("messages_posted").innerHTML = data.count;
+            console.log(data.message);
+        }
+
+        if (data.action == "updateUserCount") {
+            document.getElementById("userOnlineNumber").innerHTML = data.count;
             console.log(data.message);
         }
     };
@@ -407,4 +413,15 @@ var getNumberMessages = function (){
         }
     });
 
+};
+
+var getNumberUsers = function () {
+    AJAXGetFunction("/get_number_users", function(){
+        if (this.success){
+            document.getElementById("usersOnlineNumber").innerHTML = this.data;
+            console.log(this.data)
+        } else {
+            console.log(this.message)
+        }
+    });
 };
