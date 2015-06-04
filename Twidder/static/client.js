@@ -268,10 +268,10 @@ function postOtherMessage(form){
     var toEmail = localStorage.getItem("toEmail");
 	var formData = {
         token: token,
-		message: form.message.value,
+		message: form.otherMessage.value,
         to_email: toEmail
 	};
-    form.message.value = "";
+    form.otherMessage.value = "";
     var data = encodeToFormUrl(formData);
     AJAXPostFunction("/post_message", "Content-type", "application/x-www-form-urlencoded", data, function () {
         if(this.success) {
