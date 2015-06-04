@@ -199,7 +199,34 @@ def server_post_message():
         token = request.form['token']
         message = request.form['message']
         to_email = request.form['to_email']
-        return post_message(token, message, to_email)
+        from_email = session['email']
+        if 'token' in session:
+            if check_email_db(to_email):
+                save_message_db(to_email, from_email, message)
+                global socket_connections
+                message_count = str(count_messages_db())
+                message = {"action" : "updateMessages", "message" : "Updated messages", "count": message_count}
+                for conn in socket_connections:
+                    socket_conn= conn["connection"]
+                    socket_conn.send(json.dumps(message))
+                print "just sent an update message"
+                return jsonify(success=True, message = "Message successfully posted!")
+            else:
+                return jsonify(success=False, message="Recipient does not exist!")
+        else:
+            return jsonify(success=False, message="You are not logged in!")
+
+
+# counts and returns the total number of messages posted on Twidder
+@app.route('/get_number_messages', methods=['GET'])
+def get_number_messages():
+    if request.method == 'GET':
+        if 'token' in session:
+            message_count = count_messages_db()
+            if not message_count:
+                return jsonify(success = False, message = "Total number of messages could not be counted")
+            else:
+                return jsonify(success=True, message = "Total number of messages counted", data = str(message_count))
 
 
 if __name__ == "__main__":

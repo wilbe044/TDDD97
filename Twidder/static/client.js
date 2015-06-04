@@ -11,6 +11,7 @@ displayView = function(){
 	document.getElementById("main").innerHTML = document.getElementById("profileView").innerHTML;
 	getUserInfo();
 	postWall();
+    getNumberMessages();
 }
 };
 
@@ -64,6 +65,11 @@ var newSocket = function() {
             console.log(data.message);
             ws.close();
             ws = null;
+        }
+
+        if (data.action == "updateMessages") {
+            document.getElementById("messages_posted").innerHTML = data.count;
+            console.log(data.message);
         }
     };
 };
@@ -387,3 +393,18 @@ function drop(ev) {
     var data = ev.dataTransfer.getData("text");
     ev.target.appendChild(document.getElementById(data));
 }
+
+/**
+ * Gets the total number of messages posted on Twidder
+ */
+var getNumberMessages = function (){
+    AJAXGetFunction("/get_number_messages", function(){
+        if (this.success){
+            document.getElementById("messages_posted").innerHTML = this.data;
+            console.log(this.data)
+        } else {
+            console.log(this.message)
+        }
+    });
+
+};

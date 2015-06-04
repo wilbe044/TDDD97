@@ -1,3 +1,5 @@
+import json
+
 __author__ = 'wille'
 from flask import Flask, jsonify, session
 from Twidder.login_handler import *
@@ -48,7 +50,13 @@ def post_message(token, message, to_email):
     if 'token' in session:
         if check_email_db(to_email):
             save_message_db(to_email, from_email, message)
-            return jsonify(success=True, message="Message successfully posted.")
+            global socket_connections
+            message_count = str(count_messages_db())
+            socket_response = {"action" : "updateMessages", "message" : "Updated messages", "to_email" : to_email, "count": message_count}
+            for conn in socket_connections:
+                conn["connection"].send(json.dumps(socket_response))
+            print "just sent a update message message"
+            return jsonify(success=True, message = "Message successfully posted!")
         else:
             return jsonify(success=False, message="Recipient does not exist!")
     else:

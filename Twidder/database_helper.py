@@ -107,6 +107,13 @@ def get_logged_in_email_by_token_db(token):
         return False
 
 
+def count_messages_db():
+    c = get_db()
+    message_count = c.execute("SELECT count(*) FROM messages").fetchone()[0]
+    c.commit()
+    return message_count
+
+
 def init_db():
     with closing(connect_db()) as db:
         with app.open_resource('database.schema', mode='r') as f:
