@@ -12,6 +12,12 @@ h1{
 	text-align: center;
 
 }
+
+h5{
+    margin-top: 0px;
+    text-align: center;
+}
+
 #content{
 	width: 604px;
 	height: 400px;
@@ -102,7 +108,7 @@ input, select{
 }
 
 #post{
-	width: 650px;
+	width: 520px;
 	height: 120px;
 	margin-right: 10px;
 	border: solid;
@@ -127,11 +133,11 @@ input, select{
 	margin-left: 25px;
 	margin-top: -15px;
 	height: 50px;
-	width: 600px;
+	width: 470px;
 }
 
 #postButton{
-	width: 600px;
+	width: 470px;
 	margin-left: 25px;
 	margin-right: 25px;
 	margin-top: 5px;
@@ -250,4 +256,30 @@ input, select{
 	margin-right: auto;
 	background-color: red;
 	display: none;
+}
+
+#picDiv {
+    width: 120px;
+    height: 120px;
+    border: solid;
+    float: right;
+    background-color: #ffffff;
+    margin-right: 5px;
+}
+
+#promKing {
+    width: 80px;
+    height: 90px;
+    margin-left: 20px;
+    margin-top: -15px;
+
+}
+
+#dropDiv {
+    width: 120px;
+    height: 120px;
+    border: solid;
+    background-color: #ffffff;
+    margin-top: 20px;
+    margin-left: 75px;
 }

@@ -100,7 +100,7 @@
     </div>
     <div id="home">
         <h3>Home</h3>
-        <div id="userInfo">
+        <div id="userInfo" ondrop="drop(event)" ondragover="allowDrop(event)">
         <h3>User info</h3>
         <div id="email" >
         </div>
@@ -114,19 +114,29 @@
         </div>
         <div id="country" >
         </div>
+        <div id="dropDiv" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h5>Drop pic here</h5>
         </div>
+        </div>
+
         <div id="post">
-        <h3>Post message</h3>
-        <form onsubmit="postMessage(this); return false;" id="postMessage">
-        <input type="text" id="message" placeholder="Write your message here...">
-        <input type="submit" value="Post" id="postButton">
-        </form>
+            <h3>Post message</h3>
+            <form onsubmit="postMessage(this); return false;" id="postMessage">
+                <input type="text" id="message" placeholder="Write your message here...">
+                <input type="submit" value="Post" id="postButton">
+            </form>
         </div>
+
+        <div id="picDiv" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h5>Drag pic to userinfo</h5>
+            <img id="promKing" src="../static/promKing.jpg" alt="image" draggable="true" ondragstart="drag(event)">
+        </div>
+
         <div id="wall">
-        <h3>Wall</h3>
-            <div id="wallContent">
-            </div>
-        <button onclick="postWall()" type="button" class="refreshButton">Refresh</button>
+            <h3>Wall</h3>
+                <div id="wallContent">
+                </div>
+            <button onclick="postWall()" type="button" class="refreshButton">Refresh</button>
         </div>
 
     </div>
