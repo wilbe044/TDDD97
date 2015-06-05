@@ -123,7 +123,7 @@ def server_sign_in():
         #add_logged_in_user_db(session['token'], email)
             return jsonify(success=True, message="Successfully logged in!", data=session['token'])
         else:
-            return jsonify(success=False, Message="Wrong email or password")
+            return jsonify(success=False, message="Wrong email or password")
 
 
 def remove_socket_connection(email):

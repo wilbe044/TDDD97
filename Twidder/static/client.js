@@ -193,7 +193,7 @@ var signInUser = function(form){
             newSocket();
         } else {
             document.getElementById("errorBox").style.display = "block";
-		    document.getElementById("errorMessage").innerHTML = "FEL"; //object.message;
+		    document.getElementById("errorMessage").innerHTML = this.message;
         }
     });
 };
