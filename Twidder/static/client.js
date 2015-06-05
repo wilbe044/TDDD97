@@ -71,6 +71,8 @@ var newSocket = function() {
         if (data.action == "updateMessages") {
             document.getElementById("messages_posted").innerHTML = data.count;
             console.log(data.message);
+            postOtherWall();
+            postWall();
         }
 
 
