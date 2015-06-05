@@ -109,10 +109,12 @@ def server_sign_in():
                     print logged_in_users
             logged_user = {"email": email, "token" : session['token']}
             logged_in_users.append(logged_user)
-            user_count = str(len(logged_in_users))
-            print user_count
+            online_users = len(logged_in_users)
+            print online_users
             global socket_connections
-            message = {"action" : "updateUserCount", "message" : "Updated user count", "count": user_count}
+            total_users = count_users_db()
+            offline_users = total_users - online_users
+            message = {"action" : "updateUserCount", "message" : "Updated user count", "online": str(online_users), "offline": str(offline_users)}
             for conn in socket_connections:
                 socket_conn= conn["connection"]
                 socket_conn.send(json.dumps(message))
@@ -156,10 +158,12 @@ def server_sign_out(token):
                     email = e['email']
                     remove_socket_connection(email)
                     logged_in_users.remove(e)
-                    user_count = len(logged_in_users)
-                    print user_count
+                    online_users = len(logged_in_users)
+                    print online_users
                     global socket_connections
-                    message = {"action" : "updateUserCount", "message" : "Updated user count", "count": user_count}
+                    total_users = count_users_db()
+                    offline_users = total_users - online_users
+                    message = {"action" : "updateUserCount", "message" : "Updated user count", "online": str(online_users), "offline": str(offline_users)}
                     for conn in socket_connections:
                         socket_conn= conn["connection"]
                         socket_conn.send(json.dumps(message))
@@ -250,7 +254,8 @@ def get_number_users():
         if 'token' in session:
             user_count = len(logged_in_users)
             print user_count
-            return jsonify(success=True, message = "Total number of online users counted", data = str(user_count))
+            total_users = count_users_db()
+            return jsonify(success=True, message = "Total number of online users counted", data={"online": str(user_count), "total": str(total_users)})
 
 
 if __name__ == "__main__":

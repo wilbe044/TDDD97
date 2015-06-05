@@ -114,6 +114,13 @@ def count_messages_db():
     return message_count
 
 
+def count_users_db():
+    c = get_db()
+    user_count = c.execute("SELECT count(*) FROM users").fetchone()[0]
+    c.commit()
+    return user_count
+
+
 def init_db():
     with closing(connect_db()) as db:
         with app.open_resource('database.schema', mode='r') as f:

@@ -78,8 +78,9 @@ var newSocket = function() {
 
         if (data.action == "updateUserCount") {
             console.log("client update user count");
-            document.getElementById("usersOnlineNumber").innerHTML = data.count;
+            document.getElementById("usersOnlineNumber").innerHTML = data.online;
             console.log(data.message);
+            updateChart(data.online, data.offline);
         }
     };
 };
@@ -422,8 +423,11 @@ var getNumberMessages = function (){
 var getNumberUsers = function () {
     AJAXGetFunction("/get_number_users", function(){
         if (this.success){
-            document.getElementById("usersOnlineNumber").innerHTML = this.data;
-            console.log(this.data)
+            online_users = this.data.online;
+            total_users = this.data.total;
+            offline_users = total_users - online_users;
+            document.getElementById("usersOnlineNumber").innerHTML = online_users;
+            renderChart(online_users, offline_users);
         } else {
             console.log(this.message)
         }
