@@ -109,13 +109,15 @@ def server_sign_in():
                     print logged_in_users
             logged_user = {"email": email, "token" : session['token']}
             logged_in_users.append(logged_user)
-            user_count = len(logged_in_users)
+            user_count = str(len(logged_in_users))
             print user_count
             global socket_connections
             message = {"action" : "updateUserCount", "message" : "Updated user count", "count": user_count}
             for conn in socket_connections:
                 socket_conn= conn["connection"]
                 socket_conn.send(json.dumps(message))
+                print socket_conn
+                print "Sent an update message to socket"
         #add_logged_in_user_db(session['token'], email)
             return jsonify(success=True, message="Successfully logged in!", data=session['token'])
         else:

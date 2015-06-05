@@ -55,7 +55,7 @@ var newSocket = function() {
     ws.onmessage = function (response) {
         console.log("Message received from server");
         var data = JSON.parse(response.data);
-        console.log(response.data)
+        console.log(response.data);
 
         //Handle sign out login with same account
 
@@ -73,8 +73,10 @@ var newSocket = function() {
             console.log(data.message);
         }
 
+
         if (data.action == "updateUserCount") {
-            document.getElementById("userOnlineNumber").innerHTML = data.count;
+            console.log("client update user count");
+            document.getElementById("usersOnlineNumber").innerHTML = data.count;
             console.log(data.message);
         }
     };
