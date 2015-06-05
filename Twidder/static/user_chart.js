@@ -2,26 +2,26 @@
  * Created by wille on 15-06-05.
  */
 // Get context with jQuery - using jQuery's .get() method
-var pieChart;
+var doughnutChart;
 var renderChart = function(online, offline) {
 ctxFirst = document.getElementById("online-users-chart").getContext("2d")
 
         var data = [
     {
         value: online,
-        color:"#F7464A",
-        highlight: "#FF5A5E",
+        color:"#6DE15E",
+        highlight: "#AAFC9F",
         label: "Online"
     },
     {
         value: offline,
-        color: "#46BFBD",
-        highlight: "#5AD3D1",
+        color: "#DE5050",
+        highlight: "#FDAAAA",
         label: "Offline"
     }
 ];
 
-pieChart = new Chart(ctxFirst).Pie(data);
+doughnutChart = new Chart(ctxFirst).Doughnut(data);
 
 };
 
