@@ -6,9 +6,11 @@ displayView = function(){
 	var token = getToken();
 // the code required to display a view
     if (token === null ){
-    document.getElementById("main").innerHTML = document.getElementById("welcomeView").innerHTML;
+    //document.getElementById("main").innerHTML = document.getElementById("welcomeView").innerHTML;
+    fillMainHandlebar(document.getElementById("welcomeView"));
 } else{
-	document.getElementById("main").innerHTML = document.getElementById("profileView").innerHTML;
+	//document.getElementById("main").innerHTML = document.getElementById("profileView").innerHTML;
+    fillMainHandlebar(document.getElementById("profileView"));
 	getUserInfo();
 	postWall();
     getNumberMessages();
@@ -433,3 +435,16 @@ var getNumberUsers = function () {
         }
     });
 };
+
+
+//////* Handlebar functions *///////
+
+/* Fill main view */
+function fillMainHandlebar(view){
+    var mainContent = document.getElementById("main");
+
+    var source = view.innerHTML;
+    var template = Handlebars.compile(source);
+
+    mainContent.innerHTML = template();
+}
