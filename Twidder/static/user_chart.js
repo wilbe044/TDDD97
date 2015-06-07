@@ -26,8 +26,8 @@ doughnutChart = new Chart(ctxFirst).Doughnut(data);
 };
 
 
-updateChart = function(total, diff) {
-    pieChart.segments[0].value = total;
-    pieChart.segments[1].value = diff;
-    pieChart.update()
+updateChart = function(online, offline) {
+    doughnutChart.segments[0].value = online;
+    doughnutChart.segments[1].value = offline;
+    doughnutChart.update();
 };
