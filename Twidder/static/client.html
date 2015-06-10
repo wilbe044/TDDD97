@@ -1,252 +1,310 @@
 <html>
 <head>
+    <!-- old bootstrap -->
     <!-- Latest compiled and minified CSS -->
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"> -->
     <!-- Optional theme -->
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"> -->
-    <link href="../static/client.css" type="text/css" rel="stylesheet">
+    <!-- Latest compiled and minified JavaScript -->
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+
+    <!-- Bootstrap -->
+    <link href="../static/bootstrap.css" rel="stylesheet">
+
+    <!-- to get the client.js file -->
     <script src="../static/client.js" type="text/javascript"></script>
+
+    <!-- to get the user_chart.js file -->
     <script src="../static/user_chart.js" type="text/javascript"></script>
+
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
     <script src="../static/handlebars-v3.0.0.js"></script>
-    <!-- Latest compiled and minified JavaScript -->
-    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-    <script src="../static/serverstub.js" type="text/javascript"></script>
+
+    <!-- To get the client.css file -->
+    <link href="../static/client.css" type="text/css" rel="stylesheet">
+
     <script id="welcomeView" type="text/x-handlebars-template">
+
         <div id="errorBox">
             <div id="errorMessage">
             </div>
         </div>
-        <div id="content">
-            <div id="image">
-            <img src="/static/wimage.png" alt="image">
-            </div>
-            <div id="logInForm">
-                <form onsubmit="signInUser(this); return false;">
-                    <br>
-                    <div class="field">
-                    <label>
-                    Email:
-                    <input type="email" name="email" required>
-                    </label>
-                    </div>
-                    <div class="field">
-                    <label>
-                    Password:
-                    <input type="password" name="password" required>
-                    </label>
-                    </div>
-                    <input type="submit" value="LogIn" class="submitButton">
-                </form>
-            </div>
-            <div id="signUpForm">
-                <form onsubmit="signUpUser(this); return false;">
-                    <h3>Sign up here</h3>
-                    <div class="field">
-                    <label>
-                    First name:
-                    <input type="text" name="firstname" required>
-                    </label>
-                    </div>
-                    <div class="field">
-                    <label>
-                    Last name:
-                    <input type="text" name="lastname" required>
-                    </label>
-                    </div>
-                    <div class="field">
-                    <label>
-                    Gender:
-                    <select name="gender" id="gender">
-                        <option value ="Blank"></option>
-                        <option value ="Male">Male</option>
-                        <option value ="Female">Female</option>
-                        <option value ="Transgender">Transgender</option>
-                    </select>
-                    </label>
-                    </div>
-                    <div class="field">
-                    <label>
-                    City:
-                    <input type="text" name="city" required>
-                    </label>
-                    </div>
-                    <div class="field">
-                    <label>
-                    Country:
-                    <input type="text" name="country" required>
-                    </label>
-                    </div>
-                    <div class="field">
-                    <label>
-                    Email:
-                    <input type="email" name="email" required>
-                    </label>
-                    </div>
-                    <div class="field">
-                    <label>
-                    Password:
-                    <input type="password" name="password" id="password" required>
-                    </label>
-                    </div>
-                    <div class="field">
-                    <label>
-                    Repeat psw:
-                    <input type="password" name="repeatedPassword" id="repeatedPassword" required>
-                    </label>
-                    </div>
-                    <input type="submit" value="SignUp" class="submitButton">
-                </form>
+        <div id="welcomeContainer" class="col-sm-8 col-sm-offset-2 col-xs-offset-2">
+            <img src="/static/wimage.png" alt="image" class="col-sm-12 col-md-6" id="welcomePic">
+            <div id="signAndLogIn" class="col-sm-12 col-md-6">
+                <div id="logInForm" class="col-sm-12">
+                    <form onsubmit="signInUser(this); return false;">
+                        <br>
+                        <div class="field">
+                            <label>
+                                Email:
+                                <input type="email" name="email" required>
+                            </label>
+                        </div>
+                        <div class="field">
+                            <label>
+                                Password:
+                                <input type="password" name="password" required>
+                            </label>
+                        </div>
+                        <input type="submit" value="LogIn" class="btn btn-default welcomeButton">
+                    </form>
+                </div>
+                <div id="signUpForm" class="col-sm-12">
+                    <form onsubmit="signUpUser(this); return false;">
+                        <h3>Sign up here</h3>
+                        <div class="field">
+                            <label>
+                                First name:
+                                <input type="text" name="firstname" required>
+                            </label>
+                        </div>
+                        <div class="field">
+                            <label>
+                                Last name:
+                                <input type="text" name="lastname" required>
+                            </label>
+                        </div>
+                        <div class="field">
+                            <label>
+                                Gender:
+                                <select name="gender" id="gender">
+                                    <option value ="Blank"></option>
+                                    <option value ="Male">Male</option>
+                                    <option value ="Female">Female</option>
+                                    <option value ="Transgender">Transgender</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="field">
+                            <label>
+                                City:
+                                <input type="text" name="city" required>
+                            </label>
+                        </div>
+                        <div class="field">
+                            <label>
+                                Country:
+                                <input type="text" name="country" required>
+                            </label>
+                        </div>
+                        <div class="field">
+                            <label>
+                                Email:
+                                <input type="email" name="email" required>
+                            </label>
+                        </div>
+                        <div class="field">
+                            <label>
+                                Password:
+                                <input type="password" name="password" id="password" required>
+                            </label>
+                        </div>
+                        <div class="field">
+                            <label>
+                                Repeat psw:
+                                <input type="password" name="repeatedPassword" id="repeatedPassword" required>
+                            </label>
+                        </div>
+                        <input type="submit" value="SignUp" class="btn btn-default welcomeButton">
+                    </form>
+                </div>
             </div>
         </div>
     </script>
     <script id="profileView" type="text/x-handlebars-template">
+    <div class="container">
+        <!-- Navbar -->
         <div id="tabs">
             <h1>Welcome! You are logged in!</h1>
-                <button onclick="showDiv(1)">Home</button>
-                <button onclick="showDiv(2)">Browse</button>
-                <button onclick="showDiv(3)">Account</button>
+            <input type="submit" value="Home" class="btn btn-default" onclick="showDiv(1)">
+            <input type="submit" value="Browse" class="btn btn-default" onclick="showDiv(2)">
+            <input type="submit" value="Account" class="btn btn-default" onclick="showDiv(3)">
         </div>
-        <div id="home">
+
+        <!-- Navbar but doesn't work in mobile view..... -->
+        <!--<nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+        <!--<div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" onclick=showDiv(1)>Twidder</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling --->
+        <!--<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a onclick="showDiv(1)">Home</a></li>
+                <li><a onclick=showDiv(2)>Browse</a></li>
+                <li><a onclick="showDiv(3)">Account</a></li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+        <!--</div><!-- /.container-fluid -->
+        <!-- </nav>
+
+         <!-- Home -->
+        <div id="home" class="col-sm-12 col-md-12">
             <h3>Home</h3>
-            <div id="userInfo" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <h3>User info</h3>
-            <div id="email" >
-            </div>
-            <div id="firstname" >
-            </div>
-            <div id="familyname" >
-            </div>
-            <div id="gender" >
-            </div>
-            <div id="city" >
-            </div>
-            <div id="country" >
-            </div>
-            <div id="dropDiv" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <h5>Drop pic here</h5>
-            </div>
-            <div class="col-xs-12 col-sm-4 text-center">
-                <h4 id="messages_posted" class="data-heading"></h4>
-                <h4>messages posted on Twidder</h4>
-            </div>
+            <div id="userInfo" ondrop="drop(event)" ondragover="allowDrop(event)" class="col-sm-12 col-md-4">
+                <h3>User info</h3>
+                <div id="email" >
+                </div>
+                <div id="firstname" >
+                </div>
+                <div id="familyname" >
+                </div>
+                <div id="gender" >
+                </div>
+                <div id="city" >
+                </div>
+                <div id="country" >
+                </div>
+                <!-- to drop pic -->
+                <div id="dropDiv" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h5>Drop pic here</h5>
+                </div>
             </div>
 
-            <div id="post">
-                <h3>Post message</h3>
-                <form onsubmit="postMessage(this); return false;" id="postMessage">
-                    <input type="text" id="message" placeholder="Write your message here...">
-                    <input type="submit" value="Post" id="postButton">
-                </form>
-            </div>
+            <div id="messageWall" class="col-sm-12 col-md-4">
+                <div id="post" class="col-sm-12">
+                    <h3>Post message</h3>
+                    <div id="picDiv" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <h5 id="dragHeader">Drag</h5>
+                        <img id="promKing" src="../static/promKing.jpg" alt="image" draggable="true" ondragstart="drag(event)">
+                    </div>
+                    <form onsubmit="postMessage(this); return false;" id="postMessage">
+                        <input type="text" id="message" placeholder="Write your message here...">
+                        <input type="submit" value="Post" id="postButton" class="btn btn-default">
+                    </form>
+                </div>
 
-            <div id="picDiv" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <h5>Drag pic to userinfo</h5>
-                <img id="promKing" src="../static/promKing.jpg" alt="image" draggable="true" ondragstart="drag(event)">
-            </div>
-
-            <div id="wall">
-                <h3>Wall</h3>
+                <div id="wall" class="col-sm-12">
+                    <h3>Wall</h3>
                     <div id="wallContent">
                     </div>
-                <button onclick="postWall()" type="button" class="refreshButton">Refresh</button>
-            </div>
-            <div class="col-xs-12 col-sm-4 text-center">
-                <canvas id="online-users-chart" width="200" height="200"></canvas>
-                <h3>Users online</h3>
-            </div>
-            <div id="onlineUsersDiv" class="col-xs-12 col-sm-4 text-center">
-                <h1 id="usersOnlineNumber" class="data-heading"></h1>
-                <h3>users online</h3>
+                    <button onclick="postWall()" type="button" class="btn btn-default otherUserButton">Refresh</button>
+                </div>
             </div>
 
+            <div id="extraInfo" class="col-sm-12 col-md-4">
+                <div class="col-xs-12 text-center">
+                    <h4 id="messages_posted" class="data-heading"></h4>
+                    <h4>messages posted on Twidder</h4>
+                </div>
+                <div id="onlineUsersDiv" class="col-xs-12 text-center">
+                    <h1 id="usersOnlineNumber" class="data-heading"></h1>
+                    <h3>users online</h3>
+                </div>
+                <div class="col-xs-12 text-center">
+                    <canvas id="online-users-chart" width="200" height="200"></canvas>
+                    <h3>Users online</h3>
+                </div>
+            </div>
         </div>
+
+        <!-- Browse -->
         <div id="browse">
             <h3>Find a friend!</h3>
-            <form onsubmit="goToUser(this); return false;" id="searchUserForm">
+            <div id="browseForm">
+                <form onsubmit="goToUser(this); return false;" id="searchUserForm">
                     <div class="field">
-                    <label>
-                    Enter email:
-                    <input type="text" id="otherUserEmail">
-                    </label>
+                        <label>
+                            Enter email:
+                            </br>
+                            <input type="text" id="otherUserEmail">
+                        </label>
+                        <input type="submit" value="Find user" class="btn btn-default loggedInButton">
                     </div>
-                    <input type="submit" value="Find user">
                 </form>
+            </div>
             <div id="browseErrorBox">
                 <div id="browseErrorMessage">
                 </div>
             </div>
         </div>
+
+        <!-- Account -->
         <div id="account">
-                <h3>Change password</h3>
+            <h3>Change password</h3>
+            <div id="accountForm">
                 <form onsubmit="changePassword(this); return false;" id="changePassword">
                     <div class="field">
-                    <label>
-                    Old password:
-                    <input type="password" id="oldPassword">
-                    </label>
+                        <label>
+                            Old password:
+                            <input type="password" id="oldPassword">
+                        </label>
                     </div>
                     <div class="field">
-                    <label>
-                    New password:
-                    <input type="password" id="password">
-                    </label>
+                        <label>
+                            New password:
+                            <input type="password" id="password">
+                        </label>
                     </div>
                     <div class="field">
-                    <label>
-                    Repeat new psw:
-                    <input type="password" id="repeatedPassword">
-                    </label>
+                        <label>
+                            Repeat new psw:
+                            <input type="password" id="repeatedPassword">
+                        </label>
                     </div>
-                    <input type="submit" value="Change password">
+                    <input type="submit" value="Change password" class="btn btn-default loggedInButton">
                 </form>
                 <form onsubmit="signOutUser(); return false;">
-                    <input type="submit" value="signOut">
+                    <input type="submit" value="signOut" class="btn btn-default loggedInButton">
                 </form>
+            </div>
             <div id="accountErrorBox">
                 <div id="accountErrorMessage">
                 </div>
             </div>
-
         </div>
-        <div id="otherUser">
+
+        <!-- Other User -->
+        <div id="otherUser" class="col-sm-8 col-sm-offset-2 col-xs-offset-2">
             <h1>Other User</h1>
-            <div id="otherUserInfo">
-            <h3>User info</h3>
-            <div id="otherEmail" >
-            </div>
-            <div id="otherFirstname" >
-            </div>
-            <div id="otherFamilyname" >
-            </div>
-            <div id="otherGender" >
-            </div>
-            <div id="otherCity" >
-            </div>
-            <div id="otherCountry" >
-            </div>
-            </div>
-            <div id="otherPost">
-            <h3>Post message</h3>
-            <form onsubmit="postOtherMessage(this); return false;" id="otherPostMessage">
-            <input type="text" id="otherMessage" placeholder="Write your message here...">
-            <input type="submit" value="Post" id="otherPostButton">
-            </form>
-            </div>
-            <div id="otherWall">
-            <h3>Wall</h3>
-                <div id="otherWallContent">
+            <div id="otherUserInfo" class="col-sm-12 col-md-6">
+                <h3>User info</h3>
+                <div id="otherEmail" >
                 </div>
-            <button onclick="postOtherWall()" type="button" class="refreshButton">Refresh</button>
+                <div id="otherFirstname" >
+                </div>
+                <div id="otherFamilyname" >
+                </div>
+                <div id="otherGender" >
+                </div>
+                <div id="otherCity" >
+                </div>
+                <div id="otherCountry" >
+                </div>
             </div>
+            <div id="otherMessageWall" class="col-sm-12 col-md-6">
+                <div id="otherPost" class="col-sm-12">
+                    <h3>Post message</h3>
+                    <form onsubmit="postOtherMessage(this); return false;" id="otherPostMessage">
+                        <input type="text" id="otherMessage" placeholder="Write your message here...">
+                        <input type="submit" value="Post" class="btn btn-default otherUserButton">
+                    </form>
+                </div>
+                <div id="otherWall" class="col-sm-12">
+                    <h3>Wall</h3>
+                    <div id="otherWallContent">
+                    </div>
+                    <button onclick="postOtherWall()" type="button" class="btn btn-default otherUserButton">Refresh</button>
+                </div>
+            </div>
+        </div>
         </div>
     </script>
 </head>
 
 <body>
-	<div id="main">
-	</div>
+<div id="main">
+</div>
 </body>
 
 </html>
