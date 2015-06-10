@@ -8,7 +8,7 @@ from Twidder.database_helper import *
 
 app = Flask(__name__)
 
-
+#sets a token for a user that logs in
 def set_token():
     letters = "abcdefghiklmnopqrstuvwwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
     token = ""
@@ -16,17 +16,16 @@ def set_token():
         token += random.choice(letters)
     return token
 
-
+#signs a user in
 def sign_in(email, password):
     if check_email_password_db(email, password):
         session['token'] = set_token()
         session['email'] = email
-        #add_logged_in_user_db(session['token'], email)
         return jsonify(success=True, message="Successfully logged in!", data=session['token'])
     else:
         return jsonify(success=False, Message="Wrong email or password")
 
-
+#signs a user up
 def sign_up(email, password, firstname, familyname, gender, city, country):
     if check_email_db(email):
         return jsonify(success=False, message="User already exist!")
@@ -43,21 +42,14 @@ def sign_up(email, password, firstname, familyname, gender, city, country):
         else:
             return jsonify(success=False, message="New password must contain at least 6 characters!")
 
-#
-# def sign_out(token):
-#     if 'token' in session:
-#         session.pop(token, None)
-#         return jsonify(success=True, message="You are signed out!")
-#     else:
-#         return jsonify(success=False, message="You are not logged in!")
-
-
+#checks that a password is 6 characters or more
 def validate_password(password):
     if len(password) < 6:
         return False
     else:
         return True
 
+#checks that all user information is provided when signing up and that it is not to long
 def check_form(email, password, firstname, familyname, gender, city, country):
     if len(email) == 0 or len(email) > 30:
         return False
@@ -74,7 +66,7 @@ def check_form(email, password, firstname, familyname, gender, city, country):
     else:
         return True
 
-
+#checks if a token is in session, same as if a user is logged in
 def in_session(token):
     try:
         if session['token']:

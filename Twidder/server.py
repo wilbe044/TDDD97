@@ -22,27 +22,19 @@ PASSWORD = 'qwerty'
 socket_connections = []
 logged_in_users = []
 
-#@app.before_request
-#def before_request():
- #   get_db()
-
-#@app.teardown_request
-#def teardown_request(exception):
- #   close_db()
-
-#end
-
+#initiate the database
 @app.route("/init_db")
 def server_setup_db():
     print "server init db"
     init_db()
     return "Database is GAME ON!"
 
-
+#sets the client.html file
 @app.route("/")
 def hello():
     return app.send_static_file("client.html")
 
+#sets the socket connection
 @app.route('/socketapi', methods=['GET'])
 def socket_api():
     if request.environ.get('wsgi.websocket'):
@@ -68,17 +60,7 @@ def socket_api():
                         socket_connections.remove(conn)
                 print "The connection with the socket has closed"
                 return ""
-            #Receive and parse JSON object
-            # else:
-            #     message = ws.receive()
-            #     print "message received: ", message
-            #     print "websocket: ", ws
-            #     message = json.loads(message)
-            #     print message["message"]
-            #     return ""
     return ""
-
-
 
 # Checks if there is a connection with the same email in the connection list
 # If conneciton exist the user is logged out and info is sent to client to update data
@@ -93,8 +75,7 @@ def update_socket_connections():
             socket_connections.remove(conn)
     print socket_connections
 
-
-
+#signs a user in
 @app.route("/sign_in", methods=['POST', 'GET'])
 def server_sign_in():
     if request.method == 'POST':
@@ -125,7 +106,7 @@ def server_sign_in():
         else:
             return jsonify(success=False, message="Wrong email or password")
 
-
+#removes a socet connection
 def remove_socket_connection(email):
     global socket_connections
     for conn in socket_connections:
@@ -134,7 +115,7 @@ def remove_socket_connection(email):
     print socket_connections
     print "socket connection removed"
 
-
+#signs up a user
 @app.route("/sign_up", methods=['POST'])
 def server_sign_up():
     if request.method == 'POST':
@@ -148,7 +129,7 @@ def server_sign_up():
         message = sign_up(email, password, firstname, familyname, gender, city, country)
         return message
 
-
+#signs out a user
 @app.route("/sign_out/<token>", methods=['GET'])
 def server_sign_out(token):
     if request.method == 'GET':
@@ -173,7 +154,7 @@ def server_sign_out(token):
         else:
             return jsonify(success=False, message="You are not signed in!")
 
-
+#changes a users password
 @app.route("/change_password", methods=['POST'])
 def server_change_password():
     if request.method == 'POST':
@@ -182,13 +163,13 @@ def server_change_password():
         new_password = request.form['new_password']
         return change_password(token, old_password, new_password)
 
-
+#gets a users data from token
 @app.route("/get_user_data_by_token/<token>", methods=['GET'])
 def server_get_user_data_by_token(token):
     if request.method == 'GET':
         return get_user_data_by_token(token)
 
-
+#gets a users data from email
 @app.route("/get_user_data_by_email", methods=['POST'])
 def server_get_user_data_by_email():
     if request.method == 'POST':
@@ -196,13 +177,13 @@ def server_get_user_data_by_email():
         email = request.form['to_email']
         return get_user_data_by_email(token, email)
 
-
+#gets a users message from token
 @app.route("/get_user_messages_by_token/<token>", methods=['GET'])
 def server_get_user_messages_by_token(token):
     if request.method == 'GET':
         return get_user_messages_by_token(token)
 
-
+#gets a users message from email
 @app.route("/get_user_messages_by_email", methods=['POST'])
 def server_get_user_messages_by_email():
     if request.method == 'POST':
@@ -210,7 +191,7 @@ def server_get_user_messages_by_email():
         email = request.form['email']
         return get_user_messages_by_email(token, email)
 
-
+#posts a users message on the users wall
 @app.route("/post_message", methods=['POST'])
 def server_post_message():
     if request.method == 'POST':

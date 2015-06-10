@@ -6,6 +6,7 @@ from Twidder.login_handler import *
 
 app = Flask(__name__)
 
+#changes a users password
 def change_password(token, old_password, new_password):
     if 'token' in session:
         email = session['email']
@@ -20,12 +21,12 @@ def change_password(token, old_password, new_password):
     else:
         return jsonify(success=False, message="You are not logged in!")
 
-
+#gets a users data by token
 def get_user_data_by_token(token):
     email = session['email']
     return get_user_data_by_email(session['token'], email)
 
-
+#gets a users data by email
 def get_user_data_by_email(token, email):
     if 'token' in session:
         if check_email_db(email):
@@ -44,7 +45,7 @@ def get_user_data_by_email(token, email):
     else:
         return jsonify(success=False, message="You are not logged in!")
 
-
+#posts a users messages
 def post_message(token, message, to_email):
     from_email = session['email']
     if 'token' in session:
@@ -62,12 +63,12 @@ def post_message(token, message, to_email):
     else:
         return jsonify(success=False, message="You are not logged in!")
 
-
+#gets a users messages from token
 def get_user_messages_by_token(token):
     email = session['email']
     return get_user_messages_by_email(session['token'], email)
 
-
+#gets a users message from email
 def get_user_messages_by_email(token, email):
     if 'token' in session:
         if check_email_db(email):

@@ -1,7 +1,7 @@
 
 var ws = null;
 
-
+// function that defines which view to display and functions to call
 displayView = function(){
 	var token = getToken();
 // the code required to display a view
@@ -24,6 +24,7 @@ window.onload = function(){
 displayView();
 };
 
+//function that validates that the password chosen when signing up or changing password is valid
 validateCheck = function(form){
 	
 	if (form.password.value != form.repeatedPassword.value){
@@ -36,7 +37,7 @@ validateCheck = function(form){
 	}
  };
 
-
+//function that controls the socket connections
 var newSocket = function() {
     // Establish a connection with the socket API if no connections is initiated
     if (ws == null) {
@@ -60,7 +61,6 @@ var newSocket = function() {
         console.log(response.data);
 
         //Handle sign out login with same account
-
         if (data.action == "signOutSocket") {
             localStorage.clear();
             displayView();
@@ -70,6 +70,7 @@ var newSocket = function() {
             ws = null;
         }
 
+        //Handle actions executed when a message is posted
         if (data.action == "updateMessages") {
             document.getElementById("messages_posted").innerHTML = data.count;
             console.log(data.message);
@@ -77,7 +78,7 @@ var newSocket = function() {
             postWall();
         }
 
-
+        //Handle actions executed when the amount of logged in users is changed
         if (data.action == "updateUserCount") {
             console.log("client update user count");
             document.getElementById("usersOnlineNumber").innerHTML = data.online;
@@ -87,7 +88,7 @@ var newSocket = function() {
     };
 };
 
-
+//function that defines which div to show when logged in
  function showDiv(number){
  	if(number==1){
  		document.getElementById("home").style.display = "block";
@@ -150,7 +151,7 @@ var AJAXGetFunction = function(url, callback) {
     httpRequest.send();
 };
 
-
+//function that signs up a new user and then signs in the new user
 signUpUser = function(form){
 	if (validateCheck(form)){
 		var formData = {
@@ -179,8 +180,8 @@ signUpUser = function(form){
         }
 };
 
+//function that signs in a current user
 var signInUser = function(form){
-    //"use strict";
 	var userData = {
 		email: form.email.value,
 		password: form.password.value
@@ -198,6 +199,7 @@ var signInUser = function(form){
     });
 };
 
+//function that signs out a user
 signOutUser = function(){
     AJAXGetFunction("/sign_out/"+localStorage.getItem("myToken")+"", function() {
         if(this.success){
@@ -212,12 +214,17 @@ signOutUser = function(){
     });
 };
 
+//function that stores tha token in local storage
 function setToken(token){
 	localStorage.setItem("myToken", token);
 }
+
+//function that gets the token from local storage
 function getToken(){
 	return localStorage.getItem("myToken");
 }
+
+//function that changes a users password
 function changePassword(form){
 	var token = getToken();
 	var formData = {
@@ -245,6 +252,7 @@ function changePassword(form){
 	form.repeatedPassword.value = "";
 };
 
+//function that gets the user data and semds it to the html file
 function getUserInfo(){
     AJAXGetFunction("/get_user_data_by_token/"+localStorage.getItem("myToken")+"", function() {
         if (this.success) {
@@ -262,6 +270,7 @@ function getUserInfo(){
     });
 };
 
+//function that collects the messages from the db of a logged in user and calls postWall
 function postMessage(form){
 	var token = getToken();
     var toEmail = localStorage.getItem("myEmail");
@@ -282,6 +291,7 @@ function postMessage(form){
     });
 };
 
+//function that collects the messages of another users from the db and calls postOtherWall
 function postOtherMessage(form){
 	var token = getToken();
     var toEmail = localStorage.getItem("toEmail");
@@ -302,7 +312,7 @@ function postOtherMessage(form){
     });
 };
 
-
+//function that sends the logged in users messages to the html file to be shown
 function postWall(){
     AJAXGetFunction("/get_user_messages_by_token/"+localStorage.getItem("myToken")+"", function() {
         if (this.success) {
@@ -323,6 +333,7 @@ function postWall(){
     });
 };
 
+//function that sends another users messages to the html file to be shown
 function postOtherWall(){
 	var token = getToken();
 	var toEmail = localStorage.getItem("toEmail");
@@ -349,6 +360,7 @@ function postOtherWall(){
     });
 };
 
+//function that shows the information and wall of another users the logged in users searched for
 function goToUser(form){
 	var token = getToken();
 	var formData = {
@@ -378,7 +390,6 @@ function goToUser(form){
 };
 
 
-
 var encodeToFormUrl = function(object) {
     var data, key;
     data = "";
@@ -388,7 +399,6 @@ var encodeToFormUrl = function(object) {
     data = data.substring(0, data.length - 1);
     return data;
 };
-
 
 //Allows to drop something in a div.
 function allowDrop(ev) {
@@ -407,9 +417,7 @@ function drop(ev) {
     ev.target.appendChild(document.getElementById(data));
 }
 
-/**
- * Gets the total number of messages posted on Twidder
- */
+//function that gets the total number of messages posted on twidder
 var getNumberMessages = function (){
     AJAXGetFunction("/get_number_messages", function(){
         if (this.success){
@@ -419,9 +427,9 @@ var getNumberMessages = function (){
             console.log(this.message)
         }
     });
-
 };
 
+//function that gets the total number of logged in users on Twidder
 var getNumberUsers = function () {
     AJAXGetFunction("/get_number_users", function(){
         if (this.success){
@@ -436,10 +444,7 @@ var getNumberUsers = function () {
     });
 };
 
-
-//////* Handlebar functions *///////
-
-/* Fill main view */
+// Hanldebar function that fill main view
 function fillMainHandlebar(view){
     var mainContent = document.getElementById("main");
 
