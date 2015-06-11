@@ -1,5 +1,4 @@
-__author__ = 'wille'
-
+# -*- coding: utf-8 -*-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -23,19 +22,19 @@ class SeleniumTest(unittest.TestCase):
         driver.find_element_by_name("email").send_keys("test@gmail.com")
         driver.find_element_by_name("password").clear()
         driver.find_element_by_name("password").send_keys("newpassword")
-        driver.find_element_by_css_selector("input.submitButton").click()
+        driver.find_element_by_xpath("//input[@value='LogIn']").click()
+        driver.find_element_by_xpath("//input[@value='Browse']").click()
+        driver.find_element_by_id("otherUserEmail").clear()
+        driver.find_element_by_id("otherUserEmail").send_keys("wille@gmail.com")
+        driver.find_element_by_xpath("//input[@value='Find user']").click()
+        driver.find_element_by_id("otherMessage").clear()
+        driver.find_element_by_id("otherMessage").send_keys("test message to other user")
+        driver.find_element_by_xpath("(//input[@value='Post'])[2]").click()
+        driver.find_element_by_css_selector("input.btn.btn-default").click()
         driver.find_element_by_id("message").clear()
         driver.find_element_by_id("message").send_keys("test message to me")
         driver.find_element_by_id("postButton").click()
-        driver.find_element_by_xpath("//button[@onclick='showDiv(2)']").click()
-        driver.find_element_by_id("otherUserEmail").clear()
-        driver.find_element_by_id("otherUserEmail").send_keys("gurka@gmail.com")
-        driver.find_element_by_css_selector("#searchUserForm > input[type=\"submit\"]").click()
-        driver.find_element_by_id("otherMessage").clear()
-        driver.find_element_by_id("otherMessage").send_keys("test message to other user")
-        driver.find_element_by_id("otherPostButton").click()
-        driver.find_element_by_css_selector("button").click()
-        driver.find_element_by_xpath("//button[@onclick='showDiv(3)']").click()
+        driver.find_element_by_xpath("//input[@value='Account']").click()
         driver.find_element_by_xpath("//input[@value='signOut']").click()
 
     def is_element_present(self, how, what):
